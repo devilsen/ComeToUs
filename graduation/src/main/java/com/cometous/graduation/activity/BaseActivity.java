@@ -28,6 +28,7 @@ import com.cometous.graduation.http.volley.ServerError;
 import com.cometous.graduation.http.volley.TimeoutError;
 import com.cometous.graduation.http.volley.VolleyError;
 import com.cometous.graduation.util.Log4Utils;
+import com.cometous.graduation.view.LodingDialog;
 import com.yalantis.phoenix.PullToRefreshView;
 import android.widget.LinearLayout.LayoutParams;
 
@@ -73,6 +74,9 @@ public class BaseActivity extends SwipeBackActivity {
 
     /**下拉刷新监听*/
     private mOnRefreshListener mRefreshListener;
+
+    /** dialog加载 */
+    protected LodingDialog dialog;
 
     //错误处理
     protected Handler exph;
@@ -122,7 +126,7 @@ public class BaseActivity extends SwipeBackActivity {
     }
 
     public void setMyContentView(int resId){
-        setMyContentView(inflater.inflate(resId,null));
+        setMyContentView(inflater.inflate(resId, null));
     }
 
 
@@ -157,6 +161,18 @@ public class BaseActivity extends SwipeBackActivity {
         exph = new Handler();
         callback = new DefaultCallback(exph);
         errorListener = new ErrorListener();
+    }
+
+    /**
+     * 显示Dialog加载框
+     */
+    protected void showDialog(){
+        dialog = new LodingDialog.Builder(this).setMessage("").create();
+        dialog.show();
+    }
+    protected void showDialog(String text){
+        dialog = new LodingDialog.Builder(this).setMessage(text).create();
+        dialog.show();
     }
 
 

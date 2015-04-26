@@ -20,4 +20,5 @@
     <string name="join">我也参加</string>
     <string name="Registration">正在报名...</string>
     <string name="Registration_Success">报名成功</string>
+    <string name="now_loding">请稍后...</string>
 </resources>
