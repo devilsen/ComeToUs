@@ -170,11 +170,9 @@ public class InitiateActivity extends BaseActivity {
             if ( checkEmpty() ){
                 showDialog("正在发起...");
             }
-
         }else if (item.getItemId() == android.R.id.home ){
             finish();
         }
-
         return true;
     }
 

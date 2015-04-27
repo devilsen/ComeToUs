@@ -35,8 +35,16 @@
             android:parentActivityName=".activity.MainActivity" />
 
         <activity
+            android:name=".activity.UserInfoActivity"
+            android:parentActivityName=".activity.MainActivity" />
+
+        <activity
             android:name=".activity.SetLocationActivity"
             android:parentActivityName=".activity.InitiateActivity" />
+
+        <activity
+            android:name=".activity.AboutActivity"
+            android:parentActivityName=".activity.MainActivity" />
 
 
         <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote">

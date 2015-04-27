@@ -7,6 +7,8 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -130,7 +132,9 @@ public class MainActivity extends Activity {
                                     int position, long id) {
                 switch (position) {
                     case 0:
-                        Toast.makeText(MainActivity.this,"这是我",Toast.LENGTH_SHORT).show();
+                        Intent userinfo = new Intent(MainActivity.this,UserInfoActivity.class);
+                        mDrawerLayout.closeDrawer(mDrawerList);
+                        startActivity(userinfo);
                         break;
                     case 1:
                         mDrawerLayout.closeDrawer(mDrawerList);
@@ -167,12 +171,24 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
-                mDrawerLayout.closeDrawer(mDrawerList);
-            } else {
-                mDrawerLayout.openDrawer(mDrawerList);
-            }
+        switch (item.getItemId()){
+            case android.R.id.home:
+                if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
+                    mDrawerLayout.closeDrawer(mDrawerList);
+                } else {
+                    mDrawerLayout.openDrawer(mDrawerList);
+                }
+                break;
+            case R.id.about_cometous:
+                Intent aboutIntent = new Intent(MainActivity.this,AboutActivity.class);
+                startActivity(aboutIntent);
+                break;
+            case R.id.exit_cometous:
+                Intent exitIntent = new Intent(MainActivity.this,SignInActivity.class);
+                startActivity(exitIntent);
+                finish();
+                break;
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -187,6 +203,13 @@ public class MainActivity extends Activity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main_menu,menu);
+        return true;
     }
 
 }

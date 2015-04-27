@@ -23,5 +23,6 @@
     <color name="detail_introduction_background">#be6aff37</color>
     <color name="division">#ffdadada</color>
     <color name="actionbar_button_color">#ff00387b</color>
+    <color name="card_main_background">#ededed</color>
 
 </resources>
