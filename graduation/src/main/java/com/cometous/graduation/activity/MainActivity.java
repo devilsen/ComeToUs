@@ -122,10 +122,11 @@ public class MainActivity extends Activity {
         mDrawerToggle.syncState();
 
         DrawerAdapter drawerAdapter = new DrawerAdapter(this);
-        mDrawerList.setAdapter(drawerAdapter);
+
         RelativeLayout headlayout = (RelativeLayout) getLayoutInflater().inflate(R.layout.darwer_head_layout,null);
         Picasso.with(MainActivity.this).load("http://c2i.zhuoxiu.com.cn//upload/desk/576x373/1210/1351510593_4035.jpg").into((ImageView) headlayout.findViewById(R.id.head_img));
         mDrawerList.addHeaderView(headlayout);
+        mDrawerList.setAdapter(drawerAdapter);
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
