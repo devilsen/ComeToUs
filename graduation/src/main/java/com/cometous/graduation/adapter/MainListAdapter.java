@@ -7,10 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cometous.graduation.R;
 import com.cometous.graduation.activity.DetailActivity;
+import com.cometous.graduation.activity.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +34,7 @@ public class MainListAdapter extends BaseAdapter{
 
     private Context mContext;
     private List<String> list;
+    private MyOnclickListener myOnclickListener;
 
     public MainListAdapter(Context context, List<String> list) {
         mInflater = LayoutInflater.from(context);
@@ -57,57 +62,73 @@ public class MainListAdapter extends BaseAdapter{
         final ViewHolder viewHolder;
         if (convertView == null) {
             viewHolder = new ViewHolder();
-            convertView = mInflater.inflate(R.layout.list_item, parent, false);
-            viewHolder.imageViewIcon = (CardViewNative) convertView.findViewById(R.id.carddemo_largeimage_text);
+            convertView = mInflater.inflate(R.layout.main_list_item, parent, false);
+            viewHolder.cardLayout = (LinearLayout) convertView.findViewById(R.id.main_item_layout);
+            viewHolder.imageView = (ImageView) convertView.findViewById(R.id.main_item_img);
+            viewHolder.title = (TextView) convertView.findViewById(R.id.main_item_title_txt);
+            viewHolder.introduce = (TextView) convertView.findViewById(R.id.main_item_introduce_txt);
+            viewHolder.share = (TextView) convertView.findViewById(R.id.main_share_txt);
+            viewHolder.join = (TextView) convertView.findViewById(R.id.main_join_txt);
+            viewHolder.peopleNum = (TextView) convertView.findViewById(R.id.main_people_num_txt);
+
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        cardView(viewHolder.imageViewIcon);
+        cardView(viewHolder);
+
         return convertView;
     }
 
-    private void cardView(CardViewNative cardViewNative){
-        ArrayList<BaseSupplementalAction> subText = new ArrayList<BaseSupplementalAction>();
+    private void cardView(ViewHolder holder){
+        myOnclickListener = new MyOnclickListener();
+        holder.cardLayout.setOnClickListener(myOnclickListener);
+        holder.imageView.setOnClickListener(myOnclickListener);
+        holder.title.setOnClickListener(myOnclickListener);
+        holder.introduce.setOnClickListener(myOnclickListener);
+        holder.share.setOnClickListener(myOnclickListener);
+        holder.join.setOnClickListener(myOnclickListener);
+        holder.peopleNum.setOnClickListener(myOnclickListener);
 
-        TextSupplementalAction text1 = new TextSupplementalAction(mContext,R.id.text1);
-        TextSupplementalAction text2 = new TextSupplementalAction(mContext,R.id.text2);
-        text1.setOnActionClickListener(new BaseSupplementalAction.OnActionClickListener() {
-            @Override
-            public void onClick(Card card, View view) {
-                Toast.makeText(mContext, " Click on Text SHARE ", Toast.LENGTH_SHORT).show();
-            }
-        });
-        text2.setOnActionClickListener(new BaseSupplementalAction.OnActionClickListener() {
-            @Override
-            public void onClick(Card card, View view) {
-                Toast.makeText(mContext, " Click on Text SHARE ", Toast.LENGTH_SHORT).show();
-            }
-        });
-        subText.add(text1);
-        subText.add(text2);
-
-        MaterialLargeImageCard card = MaterialLargeImageCard.with(mContext)
-                .setTextOverImage("Come wiht us")
-                .setTitle("The graduation design")
-                .setSubTitle("let's begin")
-                .useDrawableId(R.drawable.sea)
-                .setupSupplementalActions(R.layout.card_sub_text,  subText)
-                .build();
-        card.setOnClickListener(new Card.OnCardClickListener() {
-            @Override
-            public void onClick(Card card, View view) {
-                Intent intent = new Intent(mContext,DetailActivity.class);
-                mContext.startActivity(intent);
-            }
-        });
-
-        cardViewNative.setCard(card);
 
     }
 
+    class MyOnclickListener implements View.OnClickListener{
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.layout.main_list_item:
+                case R.id.main_item_img:
+                case R.id.main_item_title_txt:
+                case R.id.main_item_introduce_txt:
+                    Intent detailIntent = new Intent(mContext,DetailActivity.class);
+                    mContext.startActivity(detailIntent);
+                    break;
+                case R.id.main_share_txt:
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
+                    shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, "come to us");
+                    mContext.startActivity(Intent.createChooser(shareIntent,"app"));
+                    break;
+                case R.id.main_join_txt:
+                    Toast.makeText(mContext,"正在加入...",Toast.LENGTH_SHORT).show();
+                    break;
+                case R.id.main_people_num_txt:
+                    Toast.makeText(mContext,"参加活动人的列表.",Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    }
+
     class ViewHolder {
-        CardViewNative imageViewIcon;
+        LinearLayout cardLayout;
+        ImageView imageView;
+        TextView title;
+        TextView introduce;
+        TextView share;
+        TextView join;
+        TextView peopleNum;
     }
 }

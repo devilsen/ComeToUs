@@ -1,6 +1,7 @@
 package com.cometous.graduation.activity;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -69,5 +70,13 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
     @Override
     public void onComplete() {
 //        Toast.makeText(DetailActivity.this,"报名成功",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+     if (item.getItemId() == android.R.id.home ){
+            finish();
+        }
+        return true;
     }
 }

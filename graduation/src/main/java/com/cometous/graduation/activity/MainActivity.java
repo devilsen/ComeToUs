@@ -146,10 +146,10 @@ public class MainActivity extends Activity {
                         startActivity(initiate);
                         break;
                     case 3:
-                        Toast.makeText(MainActivity.this,"这是通知",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this,"这是发现",Toast.LENGTH_SHORT).show();
                         break;
                     case 4:
-                        Toast.makeText(MainActivity.this,"这是好友",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this,"这是消息",Toast.LENGTH_SHORT).show();
                         break;
                     case 5:
                         Intent share = new Intent(Intent.ACTION_SEND);
@@ -157,7 +157,7 @@ public class MainActivity extends Activity {
                         share.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         share.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
                         share.putExtra(Intent.EXTRA_TEXT, getString(R.string.app_description) + "\n" +
-                                "GitHub Page :  https://www.baidu.com\n" +
+                                "baidu Page :  https://www.baidu.com\n" +
                                 "Sample App : https://play.google.com/store/apps/details?id=" +
                                 getPackageName());
                         startActivity(Intent.createChooser(share, getString(R.string.app_name)));

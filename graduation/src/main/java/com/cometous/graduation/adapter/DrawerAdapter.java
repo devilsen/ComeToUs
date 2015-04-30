@@ -19,8 +19,8 @@ public class DrawerAdapter extends BaseAdapter {
     private String[] textList  = new String[]{
             "活动",
             "发起",
-            "通知",
-            "好友",
+            "发现",
+            "消息",
             "分享"
     };
     private Context mContext;
