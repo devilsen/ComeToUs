@@ -75,6 +75,7 @@ public class InitiateActivity extends BaseActivity {
         images.setOnClickListener(mOnclickListener);
 
 
+
     }
 
     /**

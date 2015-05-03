@@ -2,7 +2,6 @@ package com.cometous.graduation.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,16 +13,10 @@ import android.widget.Toast;
 
 import com.cometous.graduation.R;
 import com.cometous.graduation.activity.DetailActivity;
-import com.cometous.graduation.activity.MainActivity;
+import com.cometous.graduation.model.Exercise;
+import com.cometous.graduation.util.Log4Utils;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import it.gmariotti.cardslib.library.cards.actions.BaseSupplementalAction;
-import it.gmariotti.cardslib.library.cards.actions.TextSupplementalAction;
-import it.gmariotti.cardslib.library.cards.material.MaterialLargeImageCard;
-import it.gmariotti.cardslib.library.internal.Card;
-import it.gmariotti.cardslib.library.view.CardViewNative;
 
 /**
  * Created by lenovo on 2015/4/10.
@@ -33,13 +26,15 @@ public class MainListAdapter extends BaseAdapter{
     private final LayoutInflater mInflater;
 
     private Context mContext;
-    private List<String> list;
+    private AssistListener assistListener;
+    private List<Exercise> list;
     private MyOnclickListener myOnclickListener;
 
-    public MainListAdapter(Context context, List<String> list) {
+    public MainListAdapter(Context context, List<Exercise> list,AssistListener assistListener) {
         mInflater = LayoutInflater.from(context);
         mContext = context;
         this.list = list;
+        this.assistListener = assistListener;
     }
 
     @Override
@@ -58,7 +53,7 @@ public class MainListAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         final ViewHolder viewHolder;
         if (convertView == null) {
             viewHolder = new ViewHolder();
@@ -76,13 +71,13 @@ public class MainListAdapter extends BaseAdapter{
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        cardView(viewHolder);
+        cardView(viewHolder,position);
 
         return convertView;
     }
 
-    private void cardView(ViewHolder holder){
-        myOnclickListener = new MyOnclickListener();
+    private void cardView(ViewHolder holder,int position){
+        myOnclickListener = new MyOnclickListener(list.get(position),position);
         holder.cardLayout.setOnClickListener(myOnclickListener);
         holder.imageView.setOnClickListener(myOnclickListener);
         holder.title.setOnClickListener(myOnclickListener);
@@ -91,10 +86,29 @@ public class MainListAdapter extends BaseAdapter{
         holder.join.setOnClickListener(myOnclickListener);
         holder.peopleNum.setOnClickListener(myOnclickListener);
 
+        if ( !list.get(position).getName().isEmpty() ){
+            holder.title.setText(list.get(position).getName());
+        }
+
+        if ( !list.get(position).getDesc().isEmpty() ){
+            holder.introduce.setText(list.get(position).getDesc());
+        }
+
+
+
 
     }
 
     class MyOnclickListener implements View.OnClickListener{
+
+        private int position;
+        private Exercise item;
+
+        public MyOnclickListener(Exercise item,int position){
+            this.item = item;
+            this.position = position;
+        }
+
         @Override
         public void onClick(View v) {
             switch (v.getId()){
@@ -102,8 +116,8 @@ public class MainListAdapter extends BaseAdapter{
                 case R.id.main_item_img:
                 case R.id.main_item_title_txt:
                 case R.id.main_item_introduce_txt:
-                    Intent detailIntent = new Intent(mContext,DetailActivity.class);
-                    mContext.startActivity(detailIntent);
+                    assistListener.gotoDetail(item,position);
+
                     break;
                 case R.id.main_share_txt:
                     Intent shareIntent = new Intent(Intent.ACTION_SEND);

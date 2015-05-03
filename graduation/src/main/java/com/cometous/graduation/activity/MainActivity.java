@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,21 +19,39 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.cometous.graduation.R;
+import com.cometous.graduation.adapter.AssistListener;
 import com.cometous.graduation.adapter.DrawerAdapter;
 import com.cometous.graduation.adapter.MainListAdapter;
+import com.cometous.graduation.exception.BusinessError;
+import com.cometous.graduation.exception.NetCallback;
+import com.cometous.graduation.http.Task;
+import com.cometous.graduation.http.volley.NetworkError;
+import com.cometous.graduation.http.volley.NoConnectionError;
+import com.cometous.graduation.http.volley.ParseError;
+import com.cometous.graduation.http.volley.Response;
+import com.cometous.graduation.http.volley.ServerError;
+import com.cometous.graduation.http.volley.TimeoutError;
+import com.cometous.graduation.http.volley.VolleyError;
+import com.cometous.graduation.model.Exercise;
+import com.cometous.graduation.util.Log4Utils;
 import com.ikimuhendis.ldrawer.ActionBarDrawerToggle;
 import com.ikimuhendis.ldrawer.DrawerArrowDrawable;
 import com.squareup.picasso.Picasso;
 import com.yalantis.phoenix.PullToRefreshView;
 
+import org.apache.http.conn.ConnectTimeoutException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.j4velin.picturechooser.Main;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements AssistListener{
 
     public static final int REFRESH_DELAY = 2000;
     //actionBar
@@ -46,7 +65,12 @@ public class MainActivity extends Activity {
     private ListView mDrawerList;
     //下拉刷新
     private PullToRefreshView mPullToRefreshView;
-    //列表页item
+    //列表
+    List<Exercise>  exerciseListlist = new ArrayList<Exercise>();
+    private MainListAdapter mainListAdapter;
+
+    protected Handler exph = new Handler();
+    public NetCallback callback = new DefaultCallback(exph);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,19 +90,19 @@ public class MainActivity extends Activity {
         initDrawer();
         initPullToRefresh();
 
-
-
+        mPullToRefreshView.setRefreshing(true, true);
     }
 
     private void initPullToRefresh() {
-        List<String> sampleList = new ArrayList<>();
-
-        for (int i = 0; i < 3; i++) {
-            sampleList.add("test" + i);
-        }
+//        List<String> sampleList = new ArrayList<>();
+//
+//        for (int i = 0; i < 3; i++) {
+//            sampleList.add("test" + i);
+//        }
 
         ListView listView = (ListView) findViewById(R.id.list_view);
-        listView.setAdapter(new MainListAdapter(this, sampleList));
+        mainListAdapter = new MainListAdapter(this, exerciseListlist,this);
+        listView.setAdapter(mainListAdapter);
 
         mPullToRefreshView = (PullToRefreshView) findViewById(R.id.pull_to_refresh);
         mPullToRefreshView.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
@@ -88,6 +112,8 @@ public class MainActivity extends Activity {
                     @Override
                     public void run() {
                         mPullToRefreshView.setRefreshing(false);
+                        Task.getActivityList(null, new ActivityList(), new ErrorResponse());
+
                     }
                 }, REFRESH_DELAY);
             }
@@ -194,6 +220,38 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * 进入详情页
+     * @param position
+     */
+    @Override
+    public void gotoDetail(Exercise item, int position) {
+        Intent detailIntent = new Intent(this,DetailActivity.class);
+        detailIntent.putExtra("paramId",item.getId());
+//        Log4Utils.i("paramid", item.get_id());
+        startActivity(detailIntent);
+    }
+
+
+    private class ActivityList implements Response.Listener<String> {
+
+        @Override
+        public void onResponse(String response) {
+            try{
+                JSONObject object = JSON.parseObject(response);
+                List<Exercise> list = JSON.parseArray(object.getString("actions"),Exercise.class);
+
+
+                exerciseListlist.addAll(list);
+                mainListAdapter.notifyDataSetChanged();
+            }catch (Exception e){
+                callback.onException(new ParseError());
+            }
+
+        }
+    }
+
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -212,5 +270,66 @@ public class MainActivity extends Activity {
         menuInflater.inflate(R.menu.main_menu,menu);
         return true;
     }
+
+
+    public class DefaultCallback implements NetCallback{
+
+        private Handler excptionHandler;
+        private String errorString = "未知错误";
+
+        public DefaultCallback(Handler excptionHandler) {
+            super();
+            this.excptionHandler = excptionHandler;
+        }
+
+        @Override
+        public void onException(Exception e) {
+            if (e instanceof ConnectTimeoutException){
+                errorString = "网络好像不给力哦，检查网络吧";
+            }else if (e instanceof java.net.SocketException){
+                errorString = "网络好像不给力哦，检查网络吧";
+            }else if (e instanceof IOException){
+                errorString = "网络好像不给力哦，检查网络吧";
+            }else if (e instanceof NoConnectionError){
+                errorString = "网络好像不给力哦，检查网络吧";
+            }else if (e instanceof TimeoutError){
+                errorString = "网络好像不给力哦，超时了";
+            }else if (e instanceof ServerError){
+                errorString = "服务器出错了";
+            }else if (e instanceof ParseError){
+                errorString = "网络好像不给力哦，检查网络吧";
+            }else if (e instanceof NetworkError){
+                errorString = "网络好像不给力哦，检查网络吧";
+            }else if (e instanceof BusinessError){
+//                JSONObject json = JSON.parseObject(e.getMessage());
+//                errorString = json.getString("res_message");
+                errorString = "网络好像不给力哦，检查网络吧";
+            }
+//            if( mPullToRefreshView.isActivated()){
+//                mPullToRefreshView.setRefreshing(false);
+//            }
+        }
+        @Override
+        public void makeToast() {
+            excptionHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(),errorString,Toast.LENGTH_SHORT);
+                }
+            });
+        }
+    }
+
+    /**
+     * 错误回调接口
+     */
+    private class ErrorResponse implements Response.ErrorListener{
+
+        @Override
+        public void onErrorResponse(VolleyError error) {
+
+        }
+    }
+
 
 }

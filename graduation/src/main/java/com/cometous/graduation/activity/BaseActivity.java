@@ -20,6 +20,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.cometous.graduation.R;
 import com.cometous.graduation.exception.BusinessError;
 import com.cometous.graduation.exception.NetCallback;
+import com.cometous.graduation.http.Task;
 import com.cometous.graduation.http.volley.NetworkError;
 import com.cometous.graduation.http.volley.NoConnectionError;
 import com.cometous.graduation.http.volley.ParseError;
@@ -163,6 +164,7 @@ public class BaseActivity extends SwipeBackActivity {
         errorListener = new ErrorListener();
     }
 
+
     /**
      * 显示Dialog加载框
      */
@@ -240,6 +242,7 @@ public class BaseActivity extends SwipeBackActivity {
      * 下拉刷新监听
      */
     class mOnRefreshListener implements PullToRefreshView.OnRefreshListener{
+
         @Override
         public void onRefresh() {
             mPullToRefresh.postDelayed(new Runnable() {
@@ -250,6 +253,10 @@ public class BaseActivity extends SwipeBackActivity {
             },REFRESH_DELAY);
         }
     }
+
+
+
+
 
     class ErrorListener implements Response.ErrorListener{
         @Override
