@@ -2,6 +2,8 @@ package com.cometous.graduation.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -57,6 +59,8 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
 
     private TextView chargePersonTxt;
     private TextView personNumTxt;
+    /** 报名返回状态 */
+    private int status = 0;
 
 
     @Override
@@ -81,19 +85,39 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
     private void init(){
         lodingView.setVisibility(View.VISIBLE);
         progressGenerator = new ProgressGenerator(this);
-         joinButton = (ActionProcessButton) findViewById(R.id.join_btn);
+        joinButton = (ActionProcessButton) findViewById(R.id.join_btn);
 
         joinButton.setMode(ActionProcessButton.Mode.ENDLESS);
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 progressGenerator.start(joinButton);
-
+                Task.joinActivity(exercise.getId(),new JoinActivity(),errorListener);
             }
         });
 
         //下拉监听
         mPullToRefresh.setOnRefreshListener(new mDetailRefreshListener());
+    }
+
+    /**
+     * 按钮回调
+     */
+    @Override
+    public void onComplete() {
+        if (status == 0){
+            String num = personNumTxt.getText().toString().trim();
+            if (!num.isEmpty()){
+                int count = Integer.parseInt(num) + 1;
+                personNumTxt.setText(count+"");
+                joinButton.setEnabled(false);
+            }
+        }else{
+            Toast.makeText(DetailActivity.this,"报名失败了,再试一试吧",Toast.LENGTH_SHORT).show();
+            joinButton.setBackgroundColor(getResources().getColor(R.color.actionbar_color));
+            joinButton.setText("我要参加");
+
+        }
     }
 
     /**
@@ -155,7 +179,7 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
     }
 
     /**
-     * 网络回调
+     * 获取详细信息网络回调
      */
     class ActivityDetail implements Response.Listener<String>{
 
@@ -166,6 +190,17 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
             exercise = JSON.parseObject(object.getString("message"),Exercise.class);
 
             setTxtView();
+        }
+    }
+
+    class JoinActivity implements Response.Listener<String>{
+
+        @Override
+        public void onResponse(String response) {
+            JSONObject object = JSON.parseObject(response);
+
+            status = object.getInteger("status");
+
         }
     }
 
@@ -187,16 +222,21 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
         cardView.setCard(card);
     }
 
+
     @Override
-    public void onComplete() {
-//        Toast.makeText(DetailActivity.this,"报名成功",Toast.LENGTH_SHORT).show();
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.detail_menu,menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
      if (item.getItemId() == android.R.id.home ){
             finish();
-        }
+     }else if(item.getItemId() == R.id.detail_share){
+         Toast.makeText(DetailActivity.this,"分享",Toast.LENGTH_SHORT).show();
+     }
         return true;
     }
 }

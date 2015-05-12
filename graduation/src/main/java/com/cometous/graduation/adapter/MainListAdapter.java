@@ -62,9 +62,9 @@ public class MainListAdapter extends BaseAdapter{
             viewHolder.imageView = (ImageView) convertView.findViewById(R.id.main_item_img);
             viewHolder.title = (TextView) convertView.findViewById(R.id.main_item_title_txt);
             viewHolder.introduce = (TextView) convertView.findViewById(R.id.main_item_introduce_txt);
-            viewHolder.share = (TextView) convertView.findViewById(R.id.main_share_txt);
-            viewHolder.join = (TextView) convertView.findViewById(R.id.main_join_txt);
-            viewHolder.peopleNum = (TextView) convertView.findViewById(R.id.main_people_num_txt);
+            viewHolder.share = (ImageView) convertView.findViewById(R.id.main_share_img);
+            viewHolder.join = (ImageView) convertView.findViewById(R.id.main_join_img);
+            viewHolder.peopleNum = (ImageView) convertView.findViewById(R.id.main_people_num_img);
 
             convertView.setTag(viewHolder);
         } else {
@@ -94,6 +94,31 @@ public class MainListAdapter extends BaseAdapter{
             holder.introduce.setText(list.get(position).getDesc());
         }
 
+        switch (position){
+            case 0:
+                holder.imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.test0));
+                break;
+            case 1:
+                holder.imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.test1));
+                break;
+            case 2:
+                holder.imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.test2));
+                break;
+            case 3:
+                holder.imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.test3));
+                break;
+            case 4:
+                holder.imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.test4));
+                break;
+            case 5:
+                holder.imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.test5));
+                break;
+            case 6:
+                holder.imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.test6));
+                break;
+
+        }
+
 
 
 
@@ -119,18 +144,18 @@ public class MainListAdapter extends BaseAdapter{
                     assistListener.gotoDetail(item,position);
 
                     break;
-                case R.id.main_share_txt:
+                case R.id.main_share_img:
                     Intent shareIntent = new Intent(Intent.ACTION_SEND);
                     shareIntent.setType("text/plain");
                     shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     shareIntent.putExtra(Intent.EXTRA_TEXT, "come to us");
                     mContext.startActivity(Intent.createChooser(shareIntent,"app"));
                     break;
-                case R.id.main_join_txt:
+                case R.id.main_join_img:
                     Toast.makeText(mContext,"正在加入...",Toast.LENGTH_SHORT).show();
                     break;
-                case R.id.main_people_num_txt:
-                    Toast.makeText(mContext,"参加活动人的列表.",Toast.LENGTH_SHORT).show();
+                case R.id.main_people_num_img:
+                    Toast.makeText(mContext,"赞",Toast.LENGTH_SHORT).show();
                     break;
             }
         }
@@ -141,8 +166,8 @@ public class MainListAdapter extends BaseAdapter{
         ImageView imageView;
         TextView title;
         TextView introduce;
-        TextView share;
-        TextView join;
-        TextView peopleNum;
+        ImageView share;
+        ImageView join;
+        ImageView peopleNum;
     }
 }

@@ -13,13 +13,22 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.cometous.graduation.R;
+import com.cometous.graduation.adapter.PickTypeDialogListener;
+import com.cometous.graduation.http.Task;
+import com.cometous.graduation.http.volley.Response;
+import com.cometous.graduation.view.PickTypeDialog;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
+
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * Created by Devilsen on 2015/4/20.
@@ -46,8 +55,24 @@ public class InitiateActivity extends BaseActivity {
     private EditText introduceEdit;
     /** 活动地点 */
     private TextView locationTxt;
+    /** 活动类型 */
+    private TextView type1Txt;
+    private TextView type2Txt;
+    private TextView type3Txt;
+    private TextView type4Txt;
 
-   @Override
+    String titleString = null;
+    String introduceString = null;
+    String locationString = null;
+    String startString = null;
+    String endString = null;
+
+    private PickTypeDialog typeDialog;
+    private LinearLayout typeLayout;
+
+    int status = 0;
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setMyContentView(R.layout.initiate_activity_layout);
@@ -61,6 +86,12 @@ public class InitiateActivity extends BaseActivity {
         introduceEdit = (EditText) findViewById(R.id.activity_introduce);
         locationTxt = (TextView) findViewById(R.id.activity_location_txt);
 
+        typeLayout = (LinearLayout) findViewById(R.id.pick_type_layout);
+        type1Txt = (TextView) findViewById(R.id.type_1_txt);
+        type2Txt = (TextView) findViewById(R.id.type_2_txt);
+        type3Txt = (TextView) findViewById(R.id.type_3_txt);
+        type4Txt = (TextView) findViewById(R.id.type_4_txt);
+
         mLocationLayout = (LinearLayout) findViewById(R.id.activity_location_layout);
         mTimeLayout = (LinearLayout) findViewById(R.id.initiate_time_layout);
         startTimeTxt = (TextView) findViewById(R.id.start_time_txt);
@@ -73,6 +104,7 @@ public class InitiateActivity extends BaseActivity {
         mTimeLayout.setOnClickListener(mOnclickListener);
         mEndTimeLayout.setOnClickListener(mOnclickListener);
         images.setOnClickListener(mOnclickListener);
+        typeLayout.setOnClickListener(mOnclickListener);
 
 
 
@@ -98,8 +130,51 @@ public class InitiateActivity extends BaseActivity {
                     break;
                 case R.id.activity_picture_choose:
                     pictrueChooser();
+                    break;
+                case R.id.pick_type_layout:
+                    pickType();
+                    break;
             }
         }
+    }
+
+    /**
+     * 选取活动类型
+     */
+    private void pickType() {
+        PickTypeDialogListener dialogListener = new PickTypeDialogListener() {
+            @Override
+            public void getTypeString(String typeString) {
+                if (typeString != null || !typeString.isEmpty()){
+                    String [] typeArray = typeString.split("@");
+                    type1Txt.setText(typeArray[0]);
+                    int length = typeArray.length;
+                    if(length == 2){
+                        type2Txt.setVisibility(View.VISIBLE);
+                        type2Txt.setText(typeArray[1]);
+                    }
+                    if(length == 3){
+                        type2Txt.setVisibility(View.VISIBLE);
+                        type2Txt.setText(typeArray[1]);
+                        type3Txt.setVisibility(View.VISIBLE);
+                        type3Txt.setText(typeArray[2]);
+                    }
+                    if(length == 4){
+                        type2Txt.setVisibility(View.VISIBLE);
+                        type2Txt.setText(typeArray[1]);
+                        type3Txt.setVisibility(View.VISIBLE);
+                        type3Txt.setText(typeArray[2]);
+                        type4Txt.setVisibility(View.VISIBLE);
+                        type4Txt.setText(typeArray[3]);
+                    }
+                }
+            }
+        };
+
+        typeDialog = new PickTypeDialog(this,R.style.PickTypeDialog);
+        typeDialog.setDialogListener(dialogListener);
+        typeDialog.show();
+
     }
 
     /**
@@ -170,6 +245,7 @@ public class InitiateActivity extends BaseActivity {
         if (item.getItemId() == R.id.activity_send){
             if ( checkEmpty() ){
                 showDialog("正在发起...");
+                Task.initiateActivityNet(getParams(),new InitiateActivityNet(),errorListener);
             }
         }else if (item.getItemId() == android.R.id.home ){
             finish();
@@ -179,11 +255,11 @@ public class InitiateActivity extends BaseActivity {
 
     private boolean checkEmpty(){
         boolean flag = true;
-        String titleString = titleEdit.getText().toString().trim();
-        String introduceString = introduceEdit.getText().toString().trim();
-        String locationString = locationTxt.getText().toString().trim();
-        String startString = startTimeTxt.getText().toString().trim();
-        String endString = endTimedTxt.getText().toString().trim();
+        titleString = titleEdit.getText().toString().trim();
+        introduceString = introduceEdit.getText().toString().trim();
+        locationString = locationTxt.getText().toString().trim();
+        startString = startTimeTxt.getText().toString().trim();
+        endString = endTimedTxt.getText().toString().trim();
 
         if ( titleString.isEmpty() ){
             showToast("标题不能为空哦");
@@ -207,5 +283,43 @@ public class InitiateActivity extends BaseActivity {
 
     private void showToast(String text){
         Toast.makeText(this,text,Toast.LENGTH_SHORT).show();
+    }
+
+    private HashMap<String,String> getParams(){
+        HashMap<String,String> param = new HashMap<String,String>();
+        param.put("name",titleString);
+        param.put("create_date",startString);
+        param.put("start_date",startString);
+        param.put("end_date",endString);
+        param.put("edit_date",endString);
+        param.put("desc",introduceString);
+        param.put("addr_name",locationString);
+        param.put("addr_position_x","0");
+        param.put("addr_position_y","0");
+//        param.put("creator","ObjectId");
+
+        return param;
+    }
+
+    /**
+     * 参加活动的网络回调
+     */
+    class InitiateActivityNet implements Response.Listener<String>{
+
+        @Override
+        public void onResponse(String response) {
+            JSONObject object = JSON.parseObject(response);
+
+            status = object.getInteger("status");
+            if (status == 0){
+                showToast("发起成功");
+                dialog.dismiss();
+                finish();
+            }else{
+                showToast("发起失败");
+                dialog.dismiss();
+            }
+
+        }
     }
 }

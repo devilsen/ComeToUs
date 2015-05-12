@@ -12,11 +12,17 @@ import com.cometous.graduation.util.Log4Utils;
 
 public class Task {
 	
-	public static final String HOST = "http://192.168.1.110:3001/";
+	public static final String HOST = "http://45.56.82.203:3001/";
+//	public static final String HOST = "http://192.168.1.110:3001/";
 
 	/** 请求地址前缀 */
-	public static final String HOST_DETAIL_URL = HOST + "action/pull/";
 
+	/** 详情页地址 */
+	public static final String HOST_DETAIL_URL = HOST + "action/pull/";
+	/** 参加活动地址 */
+	public static final String HOST_JOIN = HOST + "action/fork/";
+	/** 新建活动 */
+	public static final String HOST_NEW_ACTIVITY = HOST + "action/new/";
 
 
 	public static final String ACTION_GET_OPP_BASE = "0";
@@ -57,9 +63,6 @@ public class Task {
 	/**
 	 * 获取主页信息
 	 *
-	 * @param params
-	 * @param listener
-	 * @param errorListener
 	 */
 	public static void getActivityList(HashMap<String, String> params, Listener<String> listener,
 			ErrorListener errorListener) {
@@ -77,5 +80,23 @@ public class Task {
 		RequestManager.getRequestQueue().add(request);
 	}
 
+	/**
+	 * 参加活动
+	 * @param id 活动ID
+	 */
+	public static void joinActivity(String id, Listener<String> listener, ErrorListener errorListener){
+		StringJsonRequest request = new StringJsonRequest(HOST_JOIN + id , listener, errorListener);
+		RequestManager.getRequestQueue().add(request);
+	}
+
+	/**
+	 * 新建活动
+	 * @param param
+	 * @param listener
+	 */
+	public static void initiateActivityNet(HashMap<String,String> param,Listener<String> listener,ErrorListener errorListener){
+		StringJsonRequest request = new StringJsonRequest(Method.POST,HOST_NEW_ACTIVITY,param,listener,errorListener);
+		RequestManager.getRequestQueue().add(request);
+	}
 
 }

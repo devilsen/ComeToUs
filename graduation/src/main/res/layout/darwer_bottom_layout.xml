@@ -4,6 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/division"
+        android:layout_alignParentTop="true" />
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -13,29 +18,19 @@
         android:paddingBottom="10dp"
         android:paddingTop="10dp">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/head_img"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/sea"
-            android:layout_gravity="center_vertical"/>
 
         <TextView
-            android:id="@+id/head_name"
+            android:id="@+id/app_set"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="董森"
+            android:text="设置"
             android:paddingLeft="30dp"
+            android:textColor="@color/text_gray_white"
             android:textSize="18sp"
-            android:layout_gravity="center_vertical"/>
+            android:layout_gravity="center_vertical" />
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/division"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" />
+
 
 </RelativeLayout>

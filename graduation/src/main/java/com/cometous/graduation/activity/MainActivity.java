@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -118,6 +119,8 @@ public class MainActivity extends Activity implements AssistListener{
                 }, REFRESH_DELAY);
             }
         });
+
+
     }
 
     private void initDrawer(){
@@ -150,8 +153,10 @@ public class MainActivity extends Activity implements AssistListener{
         DrawerAdapter drawerAdapter = new DrawerAdapter(this);
 
         RelativeLayout headlayout = (RelativeLayout) getLayoutInflater().inflate(R.layout.darwer_head_layout,null);
+        RelativeLayout bottomlayout = (RelativeLayout) getLayoutInflater().inflate(R.layout.darwer_bottom_layout,null);
         Picasso.with(MainActivity.this).load("http://c2i.zhuoxiu.com.cn//upload/desk/576x373/1210/1351510593_4035.jpg").into((ImageView) headlayout.findViewById(R.id.head_img));
         mDrawerList.addHeaderView(headlayout);
+        mDrawerList.addFooterView(bottomlayout);
         mDrawerList.setAdapter(drawerAdapter);
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -175,7 +180,7 @@ public class MainActivity extends Activity implements AssistListener{
                         Toast.makeText(MainActivity.this,"这是发现",Toast.LENGTH_SHORT).show();
                         break;
                     case 4:
-                        Toast.makeText(MainActivity.this,"这是消息",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this,"这是搜索",Toast.LENGTH_SHORT).show();
                         break;
                     case 5:
                         Intent share = new Intent(Intent.ACTION_SEND);
@@ -188,6 +193,10 @@ public class MainActivity extends Activity implements AssistListener{
                                 getPackageName());
                         startActivity(Intent.createChooser(share, getString(R.string.app_name)));
                         break;
+                    case 6:
+                        Toast.makeText(MainActivity.this,"这是设置",Toast.LENGTH_SHORT).show();
+                        break;
+
 
                 }
 
@@ -215,6 +224,8 @@ public class MainActivity extends Activity implements AssistListener{
                 startActivity(exitIntent);
                 finish();
                 break;
+            case R.id.my_notice:
+                break;
 
         }
         return super.onOptionsItemSelected(item);
@@ -241,9 +252,10 @@ public class MainActivity extends Activity implements AssistListener{
                 JSONObject object = JSON.parseObject(response);
                 List<Exercise> list = JSON.parseArray(object.getString("actions"),Exercise.class);
 
-
+                exerciseListlist.clear();
                 exerciseListlist.addAll(list);
                 mainListAdapter.notifyDataSetChanged();
+                mPullToRefreshView.setRefreshing(false);
             }catch (Exception e){
                 callback.onException(new ParseError());
             }
@@ -331,5 +343,14 @@ public class MainActivity extends Activity implements AssistListener{
         }
     }
 
-
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0){
+            if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
+                mDrawerLayout.closeDrawer(mDrawerList);
+                return false;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 }

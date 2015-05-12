@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         ripple:rv_color="@color/ripple_shadow"
-        ripple:rv_rippleDuration="600"
+        ripple:rv_rippleDuration="500"
         ripple:rv_type="rectangle">
 
         <LinearLayout
@@ -56,31 +56,33 @@
                 android:layout_height="40dp"
                 android:orientation="horizontal"
                 android:paddingLeft="60dp"
-                android:paddingTop="10dp">
+                android:paddingTop="10dp"
+                android:paddingBottom="5dp">
 
-                <TextView
-                    android:id="@+id/main_share_txt"
+                <ImageView
+                    android:id="@+id/main_share_img"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:src="@drawable/share_gray"
                     android:text="分享"
                     android:textColor="@color/text_gray_white"
+                    android:paddingLeft="80dp"
                     android:textSize="18sp" />
 
-                <TextView
-                    android:id="@+id/main_join_txt"
-                    android:layout_width="wrap_content"
+                <ImageView
+                    android:id="@+id/main_join_img"
+                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="加入"
+                    android:src="@drawable/join_gray"
                     android:textColor="@color/orange_txt"
                     android:textSize="18sp" />
 
-                <TextView
-                    android:id="@+id/main_people_num_txt"
+                <ImageView
+                    android:id="@+id/main_people_num_img"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:src="@drawable/assist_gray"
                     android:text="30"
                     android:textColor="@color/text_gray_white"
                     android:textSize="18sp" />

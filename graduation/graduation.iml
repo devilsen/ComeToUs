@@ -112,6 +112,7 @@
     <orderEntry type="library" exported="" name="cardslib-extra-dragdrop-2.0.1" level="project" />
     <orderEntry type="library" exported="" name="circleimageview-1.2.2" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-21.0.0" level="project" />
+    <orderEntry type="library" exported="" name="view-pager-transforms-1.2.32" level="project" />
     <orderEntry type="module" module-name="slideDateTimePicker" exported="" />
     <orderEntry type="module" module-name="pullToRefresh" exported="" />
   </component>

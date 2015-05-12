@@ -20,7 +20,7 @@ public class DrawerAdapter extends BaseAdapter {
             "活动",
             "发起",
             "发现",
-            "消息",
+            "搜索",
             "分享"
     };
     private Context mContext;
