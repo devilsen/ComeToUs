@@ -68,6 +68,7 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
         super.onCreate(savedInstanceState);
         setMyContentView(R.layout.detials_layout);
 
+        actionBar.setTitle("Activity");
 
         initSwipeBackLayout();
         initPullRefresh(R.id.base_pull_to_refresh);

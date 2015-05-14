@@ -24,4 +24,5 @@
     <string name="about_cometous">关于</string>
     <string name="exit_cometous">登出</string>
     <string name="search_title">搜索</string>
+    <string name="queit">退出</string>
 </resources>

@@ -21,7 +21,7 @@ public class DrawerAdapter extends BaseAdapter {
             "发起",
             "发现",
             "搜索",
-            "分享"
+            "设置"
     };
     private Context mContext;
 
@@ -58,8 +58,26 @@ public class DrawerAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.itemImage.setImageResource(R.drawable.octocat_gray);
+
         viewHolder.itemText.setText(textList[position]);
+
+        switch (position){
+            case 0:
+                viewHolder.itemImage.setImageResource(R.drawable.activity_icon_shadow);
+                break;
+            case 1:
+                viewHolder.itemImage.setImageResource(R.drawable.initiate_icon_shadow);
+                break;
+            case 2:
+                viewHolder.itemImage.setImageResource(R.drawable.find_icon_shadow);
+                break;
+            case 3:
+                viewHolder.itemImage.setImageResource(R.drawable.search_icon_shadow);
+                break;
+            case 4:
+                viewHolder.itemImage.setImageResource(R.drawable.setting_icon_shadow);
+                break;
+        }
 
 
         return convertView;

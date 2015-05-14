@@ -24,6 +24,9 @@ public class NoticeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setMyContentView(R.layout.notifycation_layout);
 
+        actionBar.setTitle("Notice");
+
+
         noticeListvew = (ListView) findViewById(R.id.notici_listview);
         noticeListAdapter = new NoticeListAdapter(this,noticeList);
         noticeListvew.setAdapter(noticeListAdapter);

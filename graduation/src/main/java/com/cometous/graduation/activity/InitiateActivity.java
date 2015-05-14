@@ -77,6 +77,8 @@ public class InitiateActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setMyContentView(R.layout.initiate_activity_layout);
 
+        actionBar.setTitle("Initiate");
+
         mOnclickListener = new mClickListener();
         init();
     }

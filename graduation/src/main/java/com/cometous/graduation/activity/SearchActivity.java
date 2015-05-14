@@ -21,6 +21,8 @@ public class SearchActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setMyContentView(R.layout.search_layout);
 
+        actionBar.setTitle("Search");
+
         handleIntent(getIntent());
 
     }

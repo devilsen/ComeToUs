@@ -27,5 +27,6 @@
     <color name="actionbar_button_color">#ff00387b</color>
     <color name="card_main_background">#ededed</color>
     <color name="orange_txt">#ffffd30b</color>
+    <color name="black">#000000</color>
 
 </resources>

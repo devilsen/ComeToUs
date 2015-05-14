@@ -50,6 +50,8 @@ public class FindActivity extends BaseActivity implements AssistListener {
         super.onCreate(savedInstanceState);
         setMyContentView(R.layout.find_layout);
 
+        actionBar.setTitle("Find");
+
         initText();
         initViewPager();
         InitImageView();

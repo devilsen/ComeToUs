@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.cometous.graduation.R;
+import com.cometous.graduation.view.ProgressGenerator;
+import com.dd.processbutton.iml.ActionProcessButton;
 
 import java.io.File;
 
@@ -14,11 +16,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by Devilsen on 2015/4/27.
  */
-public class UserInfoActivity extends BaseActivity {
+public class UserInfoActivity extends BaseActivity implements ProgressGenerator.OnCompleteListener{
 
     private static final int ADD_IMAGE = 1;
 
     private CircleImageView headImg;
+    private ProgressGenerator progressGenerator;
+    private ActionProcessButton queitBut;
 
     private MyOnclickListener mOnclickListener;
 
@@ -37,6 +41,20 @@ public class UserInfoActivity extends BaseActivity {
         headImg = (CircleImageView) findViewById(R.id.user_info_head_img);
 
         headImg.setOnClickListener(mOnclickListener);
+        //退出按钮
+        progressGenerator = new ProgressGenerator(this);
+        queitBut = (ActionProcessButton) findViewById(R.id.queit_but);
+        queitBut.setMode(ActionProcessButton.Mode.ENDLESS);
+
+        queitBut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressGenerator.start(queitBut);
+                Intent queitIntent = new Intent(UserInfoActivity.this,SignInActivity.class);
+                startActivity(queitIntent);
+                finish();
+            }
+        });
     }
 
     /**
@@ -57,6 +75,11 @@ public class UserInfoActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void onComplete() {
+
+    }
+
 
     class MyOnclickListener implements View.OnClickListener{
 
@@ -67,9 +90,6 @@ public class UserInfoActivity extends BaseActivity {
                     pictrueChooser();
                     break;
             }
-
-
-
 
         }
     }

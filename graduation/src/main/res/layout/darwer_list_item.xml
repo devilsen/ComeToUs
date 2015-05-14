@@ -16,10 +16,10 @@
 
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/darwer_item_img"
-            android:src="@drawable/abc_ic_voice_search_api_mtrl_alpha"
+            android:src="@drawable/find_icon"
             android:layout_marginLeft="50dp"
             android:layout_gravity="center_vertical" />
 

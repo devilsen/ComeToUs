@@ -90,11 +90,6 @@ public class MainActivity extends Activity implements AssistListener{
     }
 
     private void initPullToRefresh() {
-//        List<String> sampleList = new ArrayList<>();
-//
-//        for (int i = 0; i < 3; i++) {
-//            sampleList.add("test" + i);
-//        }
 
         ListView listView = (ListView) findViewById(R.id.list_view);
         mainListAdapter = new MainListAdapter(this, exerciseListlist,this);
@@ -148,10 +143,10 @@ public class MainActivity extends Activity implements AssistListener{
         DrawerAdapter drawerAdapter = new DrawerAdapter(this);
 
         RelativeLayout headlayout = (RelativeLayout) getLayoutInflater().inflate(R.layout.darwer_head_layout,null);
-        RelativeLayout bottomlayout = (RelativeLayout) getLayoutInflater().inflate(R.layout.darwer_bottom_layout,null);
+//        RelativeLayout bottomlayout = (RelativeLayout) getLayoutInflater().inflate(R.layout.darwer_bottom_layout,null);
         Picasso.with(MainActivity.this).load("http://c2i.zhuoxiu.com.cn//upload/desk/576x373/1210/1351510593_4035.jpg").into((ImageView) headlayout.findViewById(R.id.head_img));
         mDrawerList.addHeaderView(headlayout);
-        mDrawerList.addFooterView(bottomlayout);
+//        mDrawerList.addFooterView(bottomlayout);
         mDrawerList.setAdapter(drawerAdapter);
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -182,18 +177,9 @@ public class MainActivity extends Activity implements AssistListener{
                         startActivity(searchInitiate);
                         break;
                     case 5:
-                        Intent share = new Intent(Intent.ACTION_SEND);
-                        share.setType("text/plain");
-                        share.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        share.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
-                        share.putExtra(Intent.EXTRA_TEXT, getString(R.string.app_description) + "\n" +
-                                "baidu Page :  https://www.baidu.com\n" +
-                                "Sample App : https://play.google.com/store/apps/details?id=" +
-                                getPackageName());
-                        startActivity(Intent.createChooser(share, getString(R.string.app_name)));
-                        break;
-                    case 6:
-                        Toast.makeText(MainActivity.this,"这是设置",Toast.LENGTH_SHORT).show();
+                        Intent settingInitiate = new Intent(MainActivity.this,SettingActivity.class);
+                        mDrawerLayout.closeDrawer(mDrawerList);
+                        startActivity(settingInitiate);
                         break;
 
 
