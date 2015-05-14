@@ -4,7 +4,6 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
@@ -14,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -37,7 +35,6 @@ import com.cometous.graduation.http.volley.ServerError;
 import com.cometous.graduation.http.volley.TimeoutError;
 import com.cometous.graduation.http.volley.VolleyError;
 import com.cometous.graduation.model.Exercise;
-import com.cometous.graduation.util.Log4Utils;
 import com.ikimuhendis.ldrawer.ActionBarDrawerToggle;
 import com.ikimuhendis.ldrawer.DrawerArrowDrawable;
 import com.squareup.picasso.Picasso;
@@ -48,8 +45,6 @@ import org.apache.http.conn.ConnectTimeoutException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import de.j4velin.picturechooser.Main;
 
 
 public class MainActivity extends Activity implements AssistListener{
@@ -177,10 +172,14 @@ public class MainActivity extends Activity implements AssistListener{
                         startActivity(initiate);
                         break;
                     case 3:
-                        Toast.makeText(MainActivity.this,"这是发现",Toast.LENGTH_SHORT).show();
+                        Intent findInitiate = new Intent(MainActivity.this,FindActivity.class);
+                        mDrawerLayout.closeDrawer(mDrawerList);
+                        startActivity(findInitiate);
                         break;
                     case 4:
-                        Toast.makeText(MainActivity.this,"这是搜索",Toast.LENGTH_SHORT).show();
+                        Intent searchInitiate = new Intent(MainActivity.this,SearchActivity.class);
+                        mDrawerLayout.closeDrawer(mDrawerList);
+                        startActivity(searchInitiate);
                         break;
                     case 5:
                         Intent share = new Intent(Intent.ACTION_SEND);
@@ -225,6 +224,8 @@ public class MainActivity extends Activity implements AssistListener{
                 finish();
                 break;
             case R.id.my_notice:
+                Intent noticeIntent = new Intent(MainActivity.this,NoticeActivity.class);
+                startActivity(noticeIntent);
                 break;
 
         }

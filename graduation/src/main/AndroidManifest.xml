@@ -47,12 +47,32 @@
             android:name=".activity.AboutActivity"
             android:parentActivityName=".activity.MainActivity" />
 
+        <activity
+            android:name=".activity.FindActivity"
+            android:parentActivityName=".activity.MainActivity" />
 
-        <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote">
-        </service>
+        <activity
+            android:name=".activity.NoticeActivity"
+            android:parentActivityName=".activity.MainActivity" />
+
+        <activity
+            android:name=".activity.SearchActivity"
+            android:parentActivityName=".activity.MainActivity">
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+        </activity>
+
+
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote"></service>
 
     </application>
-
 
 
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -83,6 +103,6 @@
     <!--允许应用读取低级别的系统日志文件 -->
     <uses-permission android:name="android.permission.READ_LOGS" />
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
 </manifest>

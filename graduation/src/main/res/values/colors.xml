@@ -4,6 +4,8 @@
     <color name="actionbar_color">#0077d9</color>
     <color name="drawer_arrow_second_color">#303f9f</color>
     <color name="shadow">#66000000</color>
+    <color name="text_blue">#ff5ab4fd</color>
+
 
     <color name="ripple_shadow">#33000000</color>
 

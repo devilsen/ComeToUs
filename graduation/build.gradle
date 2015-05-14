@@ -61,4 +61,5 @@ dependencies {
     compile project(':slideDateTimePicker')
     //发现viewpager
     compile 'com.ToxicBakery.viewpager.transforms:view-pager-transforms:1.2.32@aar'
+    compile 'com.android.support:support-v13:22.0.0'
 }
