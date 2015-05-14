@@ -4,7 +4,7 @@
     <translate
         android:fromXDelta="100%"
         android:toXDelta="0"
-        android:duration="300"
+        android:duration="260"
         android:interpolator="@android:interpolator/fast_out_slow_in"/>
 
 </set>

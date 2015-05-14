@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         ripple:rv_color="@color/ripple_shadow"
-        ripple:rv_rippleDuration="500"
+        ripple:rv_rippleDuration="400"
         ripple:rv_type="rectangle">
 
         <LinearLayout

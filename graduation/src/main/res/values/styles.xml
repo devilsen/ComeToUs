@@ -4,9 +4,11 @@
     <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
         <item name="android:actionBarStyle">@style/ActionBar</item>
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowContentOverlay">@null</item>
+
 
         <item name="popupItemBackground">?android:selectableItemBackground</item>
+
+        <item name="android:actionBarSize">55dip</item>
 
         <item name="android:homeAsUpIndicator">@drawable/actionbar_home</item>
         <item name="homeAsUpIndicator">@drawable/actionbar_home</item>

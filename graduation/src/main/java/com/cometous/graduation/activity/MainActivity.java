@@ -35,6 +35,7 @@ import com.cometous.graduation.http.volley.ServerError;
 import com.cometous.graduation.http.volley.TimeoutError;
 import com.cometous.graduation.http.volley.VolleyError;
 import com.cometous.graduation.model.Exercise;
+import com.cometous.graduation.util.CacheUtil;
 import com.ikimuhendis.ldrawer.ActionBarDrawerToggle;
 import com.ikimuhendis.ldrawer.DrawerArrowDrawable;
 import com.squareup.picasso.Picasso;
@@ -86,7 +87,8 @@ public class MainActivity extends Activity implements AssistListener{
         initDrawer();
         initPullToRefresh();
 
-        mPullToRefreshView.setRefreshing(true, true);
+        getFromMenory();
+
     }
 
     private void initPullToRefresh() {
@@ -142,7 +144,7 @@ public class MainActivity extends Activity implements AssistListener{
 
         DrawerAdapter drawerAdapter = new DrawerAdapter(this);
 
-        RelativeLayout headlayout = (RelativeLayout) getLayoutInflater().inflate(R.layout.darwer_head_layout,null);
+        RelativeLayout headlayout = (RelativeLayout) getLayoutInflater().inflate(R.layout.darwer_head_layout, null);
 //        RelativeLayout bottomlayout = (RelativeLayout) getLayoutInflater().inflate(R.layout.darwer_bottom_layout,null);
         Picasso.with(MainActivity.this).load("http://c2i.zhuoxiu.com.cn//upload/desk/576x373/1210/1351510593_4035.jpg").into((ImageView) headlayout.findViewById(R.id.head_img));
         mDrawerList.addHeaderView(headlayout);
@@ -154,7 +156,7 @@ public class MainActivity extends Activity implements AssistListener{
                                     int position, long id) {
                 switch (position) {
                     case 0:
-                        Intent userinfo = new Intent(MainActivity.this,UserInfoActivity.class);
+                        Intent userinfo = new Intent(MainActivity.this, UserInfoActivity.class);
                         mDrawerLayout.closeDrawer(mDrawerList);
                         startActivity(userinfo);
                         break;
@@ -162,22 +164,22 @@ public class MainActivity extends Activity implements AssistListener{
                         mDrawerLayout.closeDrawer(mDrawerList);
                         break;
                     case 2:
-                        Intent initiate = new Intent(MainActivity.this,InitiateActivity.class);
+                        Intent initiate = new Intent(MainActivity.this, InitiateActivity.class);
                         mDrawerLayout.closeDrawer(mDrawerList);
                         startActivity(initiate);
                         break;
                     case 3:
-                        Intent findInitiate = new Intent(MainActivity.this,FindActivity.class);
+                        Intent findInitiate = new Intent(MainActivity.this, FindActivity.class);
                         mDrawerLayout.closeDrawer(mDrawerList);
                         startActivity(findInitiate);
                         break;
                     case 4:
-                        Intent searchInitiate = new Intent(MainActivity.this,SearchActivity.class);
+                        Intent searchInitiate = new Intent(MainActivity.this, SearchActivity.class);
                         mDrawerLayout.closeDrawer(mDrawerList);
                         startActivity(searchInitiate);
                         break;
                     case 5:
-                        Intent settingInitiate = new Intent(MainActivity.this,SettingActivity.class);
+                        Intent settingInitiate = new Intent(MainActivity.this, SettingActivity.class);
                         mDrawerLayout.closeDrawer(mDrawerList);
                         startActivity(settingInitiate);
                         break;
@@ -211,6 +213,7 @@ public class MainActivity extends Activity implements AssistListener{
                 break;
             case R.id.my_notice:
                 Intent noticeIntent = new Intent(MainActivity.this,NoticeActivity.class);
+                mDrawerLayout.closeDrawer(mDrawerList);
                 startActivity(noticeIntent);
                 break;
 
@@ -225,9 +228,22 @@ public class MainActivity extends Activity implements AssistListener{
     @Override
     public void gotoDetail(Exercise item, int position) {
         Intent detailIntent = new Intent(this,DetailActivity.class);
-        detailIntent.putExtra("paramId",item.getId());
+        detailIntent.putExtra("paramId", item.getId());
 //        Log4Utils.i("paramid", item.get_id());
         startActivity(detailIntent);
+    }
+
+    /**
+     * 从缓存中读取
+     */
+    private void getFromMenory(){
+        String response = CacheUtil.getMemory("mainList");
+        if (response != null){
+            jsonToList(response);
+        }else{
+            mPullToRefreshView.setRefreshing(true, true);
+        }
+
     }
 
 
@@ -236,18 +252,28 @@ public class MainActivity extends Activity implements AssistListener{
         @Override
         public void onResponse(String response) {
             try{
-                JSONObject object = JSON.parseObject(response);
-                List<Exercise> list = JSON.parseArray(object.getString("actions"),Exercise.class);
-
-                exerciseListlist.clear();
-                exerciseListlist.addAll(list);
-                mainListAdapter.notifyDataSetChanged();
-                mPullToRefreshView.setRefreshing(false);
+                //放入缓存
+                CacheUtil.addMemory("mainList", response);
+                jsonToList(response);
             }catch (Exception e){
                 callback.onException(new ParseError());
             }
 
         }
+    }
+
+    /**
+     * 将json解析，并放入list中
+     * @param response
+     */
+    private void jsonToList(String response){
+        JSONObject object = JSON.parseObject(response);
+        List<Exercise> list = JSON.parseArray(object.getString("actions"),Exercise.class);
+
+        exerciseListlist.clear();
+        exerciseListlist.addAll(list);
+        mainListAdapter.notifyDataSetChanged();
+        mPullToRefreshView.setRefreshing(false);
     }
 
 

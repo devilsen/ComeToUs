@@ -62,4 +62,6 @@ dependencies {
     //发现viewpager
     compile 'com.ToxicBakery.viewpager.transforms:view-pager-transforms:1.2.32@aar'
     compile 'com.android.support:support-v13:22.0.0'
+    //图片缓存
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
 }

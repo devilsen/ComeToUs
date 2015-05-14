@@ -10,9 +10,13 @@ import com.cometous.graduation.http.Task;
  */
 public class MyApplication extends Application {
 
+    private static MyApplication instance;
+
+
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
         init();
 
     }
@@ -21,4 +25,10 @@ public class MyApplication extends Application {
         Task.init();
         RequestManager.init(this);
     }
+
+    public static MyApplication getInstance() {
+        return instance;
+    }
+
+
 }

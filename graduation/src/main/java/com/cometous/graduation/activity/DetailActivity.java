@@ -15,7 +15,9 @@ import com.cometous.graduation.R;
 import com.cometous.graduation.http.Task;
 import com.cometous.graduation.http.volley.Response;
 import com.cometous.graduation.model.Exercise;
+import com.cometous.graduation.util.CacheUtil;
 import com.cometous.graduation.util.Log4Utils;
+import com.cometous.graduation.util.ShareUtil;
 import com.cometous.graduation.view.ProgressGenerator;
 import com.dd.processbutton.iml.ActionProcessButton;
 import com.yalantis.phoenix.PullToRefreshView;
@@ -79,7 +81,8 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
         Intent intent = getIntent();
         paramId = intent.getStringExtra("paramId");
 
-        Task.getActivityDetail(paramId, new ActivityDetail(), errorListener);
+        getFromMemory();
+
 
     }
 
@@ -179,6 +182,17 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
         }
     }
 
+    private void getFromMemory(){
+        String text =  CacheUtil.getMemory(paramId);
+        if(text != null){
+            JSONObject object = JSON.parseObject(text);
+            exercise = JSON.parseObject(object.getString("message"),Exercise.class);
+            setTxtView();
+        }else{
+            Task.getActivityDetail(paramId, new ActivityDetail(), errorListener);
+        }
+    }
+
     /**
      * 获取详细信息网络回调
      */
@@ -186,6 +200,7 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
 
         @Override
         public void onResponse(String response) {
+            CacheUtil.addMemory(paramId,response);
             JSONObject object = JSON.parseObject(response);
 
             exercise = JSON.parseObject(object.getString("message"),Exercise.class);
@@ -236,7 +251,7 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
      if (item.getItemId() == android.R.id.home ){
             finish();
      }else if(item.getItemId() == R.id.detail_share){
-         Toast.makeText(DetailActivity.this,"分享",Toast.LENGTH_SHORT).show();
+         ShareUtil.shareToIntent(this,"web");
      }
         return true;
     }

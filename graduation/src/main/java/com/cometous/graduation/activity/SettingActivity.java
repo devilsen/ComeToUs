@@ -7,6 +7,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.cometous.graduation.R;
+import com.cometous.graduation.util.ShareUtil;
 
 /**
  * Created by Devilsen on 2015/5/14.
@@ -52,15 +53,7 @@ public class SettingActivity extends BaseActivity {
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.setting_share_txt:
-                    Intent share = new Intent(Intent.ACTION_SEND);
-                    share.setType("text/plain");
-                    share.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    share.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
-                    share.putExtra(Intent.EXTRA_TEXT, getString(R.string.app_description) + "\n" +
-                            "baidu Page :  https://www.baidu.com\n" +
-                            "Sample App : https://play.google.com/store/apps/details?id=" +
-                            getPackageName());
-                    startActivity(Intent.createChooser(share, getString(R.string.app_name)));
+                    ShareUtil.shareToIntent(SettingActivity.this,"web");
                     break;
             }
         }
