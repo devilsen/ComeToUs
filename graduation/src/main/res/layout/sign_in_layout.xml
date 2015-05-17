@@ -18,16 +18,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:inputType="textEmailAddress"
-            android:hint="@string/user_name" />
+            android:hint="@string/user_name"
+            android:inputType="textEmailAddress" />
 
         <EditText
             android:id="@+id/user_password_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:inputType="textPassword"
-            android:hint="@string/user_password" />
+            android:hint="@string/user_password"
+            android:inputType="textPassword" />
 
         <com.dd.processbutton.iml.ActionProcessButton
             android:id="@+id/btnSignIn"
@@ -45,5 +45,18 @@
             custom:pb_textProgress="@string/Loading" />
 
     </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/register_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="10dp"
+        android:text="注册"
+        android:textColor="@color/text_gray_white"
+        android:textSize="18sp" />
 
 </RelativeLayout>

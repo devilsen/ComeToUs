@@ -140,22 +140,22 @@
         android:paddingTop="10dp">
 
         <Button
-            android:id="@+id/pick_type_confirm"
+            android:id="@+id/pick_type_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/actionbar_color"
-            android:text="确定"
+            android:text="取消"
             android:textColor="@color/text_white" />
 
         <Button
-            android:id="@+id/pick_type_cancel"
+            android:id="@+id/pick_type_confirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_weight="1"
             android:background="@color/actionbar_color"
-            android:text="取消"
+            android:text="确定"
             android:textColor="@color/text_white" />
 
     </LinearLayout>

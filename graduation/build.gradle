@@ -64,4 +64,6 @@ dependencies {
     compile 'com.android.support:support-v13:22.0.0'
     //图片缓存
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
+    //eventbus
+    compile 'de.greenrobot:eventbus:2.4.0'
 }

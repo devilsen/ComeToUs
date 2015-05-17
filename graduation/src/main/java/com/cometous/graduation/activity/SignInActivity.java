@@ -6,11 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cometous.graduation.R;
 import com.cometous.graduation.view.ProgressGenerator;
 import com.dd.processbutton.iml.ActionProcessButton;
+
+import org.w3c.dom.Text;
 
 /**
  * Created by Devilsen on 2015/4/18.
@@ -24,6 +27,7 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
     private ActionProcessButton signInBtn;
     private String username;
     private String password;
+    private TextView registerTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +39,8 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
 
         usernameEdit = (EditText) findViewById(R.id.username_edit);
         usernamePasswordEdit = (EditText) findViewById(R.id.user_password_edit);
+        registerTxt = (TextView) findViewById(R.id.register_txt);
+
         progressGenerator = new ProgressGenerator(this);
         signInBtn = (ActionProcessButton) findViewById(R.id.btnSignIn);
         signInBtn.setMode(ActionProcessButton.Mode.ENDLESS);
@@ -46,7 +52,16 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
                 username = usernameEdit.getText().toString().trim();
                 password = usernamePasswordEdit.getText().toString().trim();
 
-                check(username,password);
+                check(username, password);
+            }
+        });
+
+        registerTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent registerIntent = new Intent(SignInActivity.this,RegisterActivity.class);
+                startActivity(registerIntent);
+                finish();
             }
         });
 
@@ -70,8 +85,6 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
             startActivity(intent);
             finish();
         }
-
-
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.cometous.graduation.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,10 +16,13 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baidu.mapapi.map.MapPoi;
 import com.cometous.graduation.R;
 import com.cometous.graduation.adapter.PickTypeDialogListener;
 import com.cometous.graduation.http.Task;
 import com.cometous.graduation.http.volley.Response;
+import com.cometous.graduation.util.PreferenceUtil;
+import com.cometous.graduation.util.ShareUtil;
 import com.cometous.graduation.view.PickTypeDialog;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
@@ -29,6 +33,8 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by Devilsen on 2015/4/20.
@@ -60,12 +66,16 @@ public class InitiateActivity extends BaseActivity {
     private TextView type2Txt;
     private TextView type3Txt;
     private TextView type4Txt;
+    /** 地址信息 */
+    private double longitude;
+    private double latitude;
 
     String titleString = null;
     String introduceString = null;
     String locationString = null;
     String startString = null;
     String endString = null;
+    String myTypeString = null;
 
     private PickTypeDialog typeDialog;
     private LinearLayout typeLayout;
@@ -80,7 +90,11 @@ public class InitiateActivity extends BaseActivity {
         actionBar.setTitle("Initiate");
 
         mOnclickListener = new mClickListener();
+
+        EventBus.getDefault().register(this);
+
         init();
+        getInfo();
     }
 
     private void init() {
@@ -108,9 +122,9 @@ public class InitiateActivity extends BaseActivity {
         images.setOnClickListener(mOnclickListener);
         typeLayout.setOnClickListener(mOnclickListener);
 
-
-
     }
+
+
 
     /**
      * 点击监听
@@ -148,27 +162,8 @@ public class InitiateActivity extends BaseActivity {
             @Override
             public void getTypeString(String typeString) {
                 if (typeString != null || !typeString.isEmpty()){
-                    String [] typeArray = typeString.split("@");
-                    type1Txt.setText(typeArray[0]);
-                    int length = typeArray.length;
-                    if(length == 2){
-                        type2Txt.setVisibility(View.VISIBLE);
-                        type2Txt.setText(typeArray[1]);
-                    }
-                    if(length == 3){
-                        type2Txt.setVisibility(View.VISIBLE);
-                        type2Txt.setText(typeArray[1]);
-                        type3Txt.setVisibility(View.VISIBLE);
-                        type3Txt.setText(typeArray[2]);
-                    }
-                    if(length == 4){
-                        type2Txt.setVisibility(View.VISIBLE);
-                        type2Txt.setText(typeArray[1]);
-                        type3Txt.setVisibility(View.VISIBLE);
-                        type3Txt.setText(typeArray[2]);
-                        type4Txt.setVisibility(View.VISIBLE);
-                        type4Txt.setText(typeArray[3]);
-                    }
+                    myTypeString = typeString;
+                    setTypeByArray(typeString);
                 }
             }
         };
@@ -287,21 +282,6 @@ public class InitiateActivity extends BaseActivity {
         Toast.makeText(this,text,Toast.LENGTH_SHORT).show();
     }
 
-    private HashMap<String,String> getParams(){
-        HashMap<String,String> param = new HashMap<String,String>();
-        param.put("name",titleString);
-        param.put("create_date",startString);
-        param.put("start_date",startString);
-        param.put("end_date",endString);
-        param.put("edit_date",endString);
-        param.put("desc",introduceString);
-        param.put("addr_name",locationString);
-        param.put("addr_position_x","0");
-        param.put("addr_position_y","0");
-//        param.put("creator","ObjectId");
-
-        return param;
-    }
 
     /**
      * 参加活动的网络回调
@@ -323,5 +303,141 @@ public class InitiateActivity extends BaseActivity {
             }
 
         }
+    }
+
+
+    private HashMap<String,String> getParams(){
+        HashMap<String,String> param = new HashMap<String,String>();
+        param.put("name",titleString);
+        param.put("create_date",startString);
+        param.put("start_date",startString);
+        param.put("end_date",endString);
+        param.put("edit_date",endString);
+        param.put("desc",introduceString);
+        param.put("addr_name",locationString);
+        param.put("addr_position_x",longitude + "");
+        param.put("addr_position_y",latitude + "");
+//        param.put("creator","ObjectId");
+
+        return param;
+    }
+
+    /** eventbus 主线程 */
+    public void onEventMainThread(MapPoi poi) {
+        locationString = poi.getName().replace("\\", "");
+        latitude = poi.getPosition().latitude;
+        longitude = poi.getPosition().longitude;
+        locationTxt.setText(locationString);
+    }
+
+    /**
+     * 通过array设置类别
+     * @param typeString
+     */
+    private void setTypeByArray(String typeString){
+        String [] typeArray = typeString.split("@");
+
+        int length = typeArray.length;
+        if(length == 1){
+            type1Txt.setText(typeArray[0]);
+            type2Txt.setVisibility(View.INVISIBLE);
+            type3Txt.setVisibility(View.INVISIBLE);
+            type4Txt.setVisibility(View.INVISIBLE);
+        }
+        if(length == 2){
+            type1Txt.setText(typeArray[0]);
+            type2Txt.setVisibility(View.VISIBLE);
+            type2Txt.setText(typeArray[1]);
+            type3Txt.setVisibility(View.INVISIBLE);
+            type4Txt.setVisibility(View.INVISIBLE);
+        }
+        if(length == 3){
+            type1Txt.setText(typeArray[0]);
+            type2Txt.setVisibility(View.VISIBLE);
+            type2Txt.setText(typeArray[1]);
+            type3Txt.setVisibility(View.VISIBLE);
+            type3Txt.setText(typeArray[2]);
+            type4Txt.setVisibility(View.INVISIBLE);
+        }
+        if(length == 4){
+            type1Txt.setText(typeArray[0]);
+            type2Txt.setVisibility(View.VISIBLE);
+            type2Txt.setText(typeArray[1]);
+            type3Txt.setVisibility(View.VISIBLE);
+            type3Txt.setText(typeArray[2]);
+            type4Txt.setVisibility(View.VISIBLE);
+            type4Txt.setText(typeArray[3]);
+        }
+    }
+
+    /** 保存尚未发布的数据 */
+    private void saveInfo(){
+        titleString = titleEdit.getText().toString().trim();
+        introduceString = introduceEdit.getText().toString().trim();
+        locationString = locationTxt.getText().toString().trim();
+        startString = startTimeTxt.getText().toString().trim();
+        endString = endTimedTxt.getText().toString().trim();
+        if (!titleString.isEmpty()){
+            PreferenceUtil.saveInitiatePreference("initieate.title", titleString);
+        }
+        if (!introduceString.isEmpty()){
+            PreferenceUtil.saveInitiatePreference("initieate.introduce", introduceString);
+        }
+        if (!locationString.isEmpty()){
+            PreferenceUtil.saveInitiatePreference("initieate.location", locationString);
+        }
+        if (!startString.isEmpty()){
+            PreferenceUtil.saveInitiatePreference("initieate.starttime", startString);
+        }
+        if (!endString.isEmpty()){
+            PreferenceUtil.saveInitiatePreference("initieate.endtime", endString);
+        }
+        if (!myTypeString.isEmpty()){
+            PreferenceUtil.saveInitiatePreference("initieate.type", myTypeString);
+        }
+
+    }
+
+    /** 得到尚未发布的数据 */
+    private void getInfo() {
+        titleString = PreferenceUtil.getInitiatePreferencesByKey("initieate.title");
+        introduceString = PreferenceUtil.getInitiatePreferencesByKey("initieate.introduce");
+        locationString = PreferenceUtil.getInitiatePreferencesByKey("initieate.location");
+        startString = PreferenceUtil.getInitiatePreferencesByKey("initieate.starttime");
+        endString = PreferenceUtil.getInitiatePreferencesByKey("initieate.endtime");
+        myTypeString = PreferenceUtil.getInitiatePreferencesByKey("initieate.type");
+
+        if ( titleString != null){
+            titleEdit.setText(titleString);
+        }
+        if ( introduceString != null){
+            introduceEdit.setText(introduceString);
+        }
+        if ( locationString != null){
+            locationTxt.setText(locationString);
+        }
+        if ( startString != null){
+            startTimeTxt.setText(startString);
+        }
+        if ( endString != null){
+            endTimedTxt.setText(endString);
+        }
+        if ( myTypeString != null){
+            setTypeByArray(myTypeString);
+        }
+    }
+
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        saveInfo();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

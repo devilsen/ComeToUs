@@ -60,6 +60,10 @@
             android:parentActivityName=".activity.MainActivity" />
 
         <activity
+            android:name=".activity.RegisterActivity"
+            android:parentActivityName=".activity.MainActivity" />
+
+        <activity
             android:name=".activity.SearchActivity"
             android:parentActivityName=".activity.MainActivity">
             <meta-data
