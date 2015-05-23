@@ -91,6 +91,9 @@ public class MainActivity extends Activity implements AssistListener{
 
     }
 
+    /**
+     * 初始化下拉刷新组件
+     */
     private void initPullToRefresh() {
 
         ListView listView = (ListView) findViewById(R.id.list_view);
@@ -111,8 +114,6 @@ public class MainActivity extends Activity implements AssistListener{
                 }, REFRESH_DELAY);
             }
         });
-
-
     }
 
     private void initDrawer(){
@@ -254,6 +255,7 @@ public class MainActivity extends Activity implements AssistListener{
             try{
                 //放入缓存
                 CacheUtil.addMemory("mainList", response);
+                //解析json数据
                 jsonToList(response);
             }catch (Exception e){
                 callback.onException(new ParseError());

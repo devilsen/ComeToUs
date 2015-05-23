@@ -32,6 +32,7 @@
             android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/user_info_jion_time_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -65,6 +66,7 @@
                 android:background="@color/text_white" />
 
             <LinearLayout
+                android:id="@+id/user_info_initiate_time_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -130,7 +132,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:text="董森"
+                    android:text=""
                     android:textColor="@color/text_gray_white"
                     android:textSize="18sp" />
 
@@ -164,7 +166,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:text="湖南科技大学"
+                    android:text=""
                     android:textColor="@color/text_gray_white"
                     android:textSize="18sp" />
 
@@ -198,7 +200,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:text="学生"
+                    android:text=""
                     android:textColor="@color/text_gray_white"
                     android:textSize="18sp" />
 
@@ -232,7 +234,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:text="185****6306"
+                    android:text=""
                     android:textColor="@color/text_gray_white"
                     android:textSize="18sp" />
 
@@ -267,7 +269,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:text="375913436@qq.com"
+                    android:text=""
                     android:textColor="@color/text_gray_white"
                     android:textSize="18sp" />
 

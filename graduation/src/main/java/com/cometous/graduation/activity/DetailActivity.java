@@ -86,6 +86,9 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
 
     }
 
+    /**
+     * 初始化按钮
+     */
     private void init(){
         lodingView.setVisibility(View.VISIBLE);
         progressGenerator = new ProgressGenerator(this);
@@ -221,8 +224,9 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
     }
 
 
-
-
+    /**
+     *设置卡片标签
+     */
     private void init_card_inner_layout() {
         //Create a Card
         card = new Card(this,R.layout.detail_custom_card);

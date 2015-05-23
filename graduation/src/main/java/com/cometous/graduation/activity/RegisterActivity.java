@@ -6,9 +6,15 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.cometous.graduation.R;
+import com.cometous.graduation.http.Task;
+import com.cometous.graduation.http.volley.Response;
 import com.cometous.graduation.view.ProgressGenerator;
 import com.dd.processbutton.iml.ActionProcessButton;
+
+import java.util.HashMap;
 
 /**
  * Created by Devilsen on 2015/5/16.
@@ -31,6 +37,9 @@ public class RegisterActivity extends BaseActivity implements ProgressGenerator.
     private String jobString;
     private String phoneString;
     private String emailString;
+
+    int status = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,15 +89,57 @@ public class RegisterActivity extends BaseActivity implements ProgressGenerator.
             Toast.makeText(this,"邮箱为空",Toast.LENGTH_SHORT).show();
         }else{
             progressGenerator.start(registerBtn);
-            Intent intent = new Intent(this,MainActivity.class);
-            startActivity(intent);
-            finish();
+            Task.register(getParams(),new RegisterListener(),errorListener);
+        }
+    }
+
+
+    private HashMap<String,String> getParams(){
+        HashMap<String,String> param = new HashMap<String,String>();
+        param.put("loginname",usernameString);
+        param.put("passwd",passwordString);
+        param.put("email",emailString);
+        param.put("phone",phoneString);
+        param.put("title",jobString);
+        param.put("school",schoolString);
+
+        return param;
+    }
+
+    /**
+     * 注册接口
+     */
+    class RegisterListener implements Response.Listener<String>{
+
+        @Override
+        public void onResponse(String response) {
+            JSONObject object = JSON.parseObject(response);
+            status = object.getInteger("status");
+
         }
     }
 
 
     @Override
     public void onComplete() {
-        
+        if (status == 1){
+            Intent intent = new Intent(RegisterActivity.this,MainActivity.class);
+            startActivity(intent);
+            finish();
+        }else if(status == 0){
+            Toast.makeText(RegisterActivity.this,"用户已存在",Toast.LENGTH_SHORT).show();
+            registerError();
+        }else if (status == 2 ){
+            Toast.makeText(RegisterActivity.this,"用户名或者密码格式有问题",Toast.LENGTH_SHORT).show();
+            registerError();
+        }else{
+            Toast.makeText(RegisterActivity.this,"未知错误",Toast.LENGTH_SHORT).show();
+            registerError();
+        }
+    }
+
+    private void registerError(){
+        registerBtn.setBackgroundColor(getResources().getColor(R.color.actionbar_color));
+        registerBtn.setText(R.string.register);
     }
 }

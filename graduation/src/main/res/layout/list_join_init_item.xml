@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_background">
+
+    <ImageView
+        android:id="@+id/activity_img"
+        android:layout_width="60dp"
+        android:layout_height="70dp"
+        android:src="@drawable/sea"
+        android:layout_marginLeft="10dp"/>
+
+    <LinearLayout
+        android:id="@+id/join_or_init_layout"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp">
+        <TextView
+            android:id="@+id/activity_title_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="毕业设计"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/activity_introduce_txt"
+            android:paddingRight="5dp"
+            android:layout_marginTop="3dp"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:text="毕业设计毕业设计毕业设计毕业设计毕业设计毕业设计 "
+            android:textColor="@color/text_gray_white"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+</LinearLayout>

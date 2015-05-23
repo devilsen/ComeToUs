@@ -171,7 +171,6 @@ public class InitiateActivity extends BaseActivity {
         typeDialog = new PickTypeDialog(this,R.style.PickTypeDialog);
         typeDialog.setDialogListener(dialogListener);
         typeDialog.show();
-
     }
 
     /**
