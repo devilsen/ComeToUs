@@ -181,6 +181,8 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
 
         if (!exercise.getImg_url().isEmpty()){
             ImageLoader.getInstance().displayImage(Task.HOST + exercise.getImg_url(), detailImage, MyApplication.options);
+        }else{
+            detailImage.setImageDrawable(getResources().getDrawable(R.drawable.no_picture_1));
         }
 
         init_card_inner_layout();

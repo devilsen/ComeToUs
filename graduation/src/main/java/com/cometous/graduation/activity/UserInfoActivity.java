@@ -19,6 +19,7 @@ import com.cometous.graduation.model.User;
 import com.cometous.graduation.util.CacheUtil;
 import com.cometous.graduation.view.ProgressGenerator;
 import com.dd.processbutton.iml.ActionProcessButton;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;
 import java.util.List;
@@ -43,11 +44,16 @@ public class UserInfoActivity extends BaseActivity implements ProgressGenerator.
 
     private User userinfo;
 
+    private TextView joinCount;
+    private TextView initCount;
     private TextView usernameTxt;
     private TextView schoolTxt;
     private TextView jobTxt;
     private TextView phoneTxt;
     private TextView emailTxt;
+
+    private String joinString;
+    private String initString;
 
 
     @Override
@@ -67,6 +73,8 @@ public class UserInfoActivity extends BaseActivity implements ProgressGenerator.
         headImg = (CircleImageView) findViewById(R.id.user_info_head_img);
         joinTimeLayout = (LinearLayout) findViewById(R.id.user_info_jion_time_layout);
         initiateLayout = (LinearLayout) findViewById(R.id.user_info_initiate_time_layout);
+        joinCount = (TextView) findViewById(R.id.user_info_jion_time_txt);
+        initCount = (TextView) findViewById(R.id.user_info_initiate_time_txt);
         usernameTxt = (TextView) findViewById(R.id.username_txt);
         schoolTxt = (TextView) findViewById(R.id.user_shool_txt);
         jobTxt = (TextView) findViewById(R.id.user_job_txt);
@@ -161,6 +169,8 @@ public class UserInfoActivity extends BaseActivity implements ProgressGenerator.
             try{
                 JSONObject object = JSON.parseObject(response);
                 userinfo = JSON.parseObject(object.getString("message"), User.class);
+                joinString = object.getString("countOfJoin");
+                initString = object.getString("countOfMy");
 
                 if (userinfo != null){
                     setText();
@@ -176,6 +186,19 @@ public class UserInfoActivity extends BaseActivity implements ProgressGenerator.
     }
 
     private void setText(){
+
+        ImageLoader.getInstance().displayImage("http://gexing.edujq.com/img/2013/04/19/04191009418291.jpg", headImg);
+
+        if (joinString == null || joinString.isEmpty()){
+            joinCount.setText("0");
+        }else{
+            joinCount.setText(joinString);
+        }
+        if (initString == null || initString.isEmpty()){
+            initCount.setText("0");
+        }else{
+            joinCount.setText(initString);
+        }
         usernameTxt.setText(userinfo.getLoginname());
         schoolTxt.setText(userinfo.getSchool());
         jobTxt.setText(userinfo.getTitle());

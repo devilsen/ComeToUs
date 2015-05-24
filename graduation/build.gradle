@@ -52,16 +52,11 @@ dependencies {
     compile 'com.github.j4velin.PictureChooser:picturechooser:+'
     //circleimageview
     compile 'de.hdodenhof:circleimageview:1.2.2'
-    //picasso
-    compile 'com.squareup.picasso:picasso:2.5.2'
     //百度地图
     compile files('libs/baidumapapi_v3_4_0.jar')
     compile files('libs/locSDK_5.0.jar')
     //timePicker
     compile project(':slideDateTimePicker')
-    //发现viewpager
-    compile 'com.ToxicBakery.viewpager.transforms:view-pager-transforms:1.2.32@aar'
-    compile 'com.android.support:support-v13:22.0.0'
     //图片缓存
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     //eventbus

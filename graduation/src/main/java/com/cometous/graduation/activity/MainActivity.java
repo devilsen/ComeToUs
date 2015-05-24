@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -38,7 +39,7 @@ import com.cometous.graduation.model.Exercise;
 import com.cometous.graduation.util.CacheUtil;
 import com.ikimuhendis.ldrawer.ActionBarDrawerToggle;
 import com.ikimuhendis.ldrawer.DrawerArrowDrawable;
-import com.squareup.picasso.Picasso;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import org.apache.http.conn.ConnectTimeoutException;
@@ -62,7 +63,10 @@ public class MainActivity extends Activity implements AssistListener{
     private ListView mDrawerList;
     //下拉刷新
     private PullToRefreshView mPullToRefreshView;
+    //上拉加载次数
+    private int upCount = 0;
     //列表
+    private ListView listView;
     List<Exercise>  exerciseListlist = new ArrayList<Exercise>();
     private MainListAdapter mainListAdapter;
 
@@ -96,10 +100,13 @@ public class MainActivity extends Activity implements AssistListener{
      */
     private void initPullToRefresh() {
 
-        ListView listView = (ListView) findViewById(R.id.list_view);
+        listView = (ListView) findViewById(R.id.main_list_view);
         mainListAdapter = new MainListAdapter(this, exerciseListlist,this);
         listView.setAdapter(mainListAdapter);
 
+        final ErrorResponse errorResponse = new ErrorResponse();
+
+        /** 下拉刷新 */
         mPullToRefreshView = (PullToRefreshView) findViewById(R.id.pull_to_refresh);
         mPullToRefreshView.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
             @Override
@@ -108,12 +115,45 @@ public class MainActivity extends Activity implements AssistListener{
                     @Override
                     public void run() {
                         mPullToRefreshView.setRefreshing(false);
-                        Task.getActivityList(null, new ActivityList(), new ErrorResponse());
-
+                        Task.getActivityList(null, new ActivityList(), errorResponse);
+                        upCount = 0;
                     }
                 }, REFRESH_DELAY);
             }
         });
+        lodingMore();
+    }
+
+    /** 底端自动加载 */
+    private void lodingMore(){
+
+        View footLayout;
+
+        footLayout = this.getLayoutInflater().inflate(R.layout.lodemore_footview, null);
+
+        listView.addFooterView(footLayout);
+
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            int lastItemIndex;//当前ListView中最后一个Item的索引
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && lastItemIndex == mainListAdapter.getCount() - 1) {
+                    upCount++;
+                    //加载数据
+                    Task.getMoreActivityList(upCount * 10, new ActivityList(), new ErrorResponse());
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                lastItemIndex = firstVisibleItem + visibleItemCount - 1 -1;
+            }
+        });
+
+
     }
 
     private void initDrawer(){
@@ -147,7 +187,7 @@ public class MainActivity extends Activity implements AssistListener{
 
         RelativeLayout headlayout = (RelativeLayout) getLayoutInflater().inflate(R.layout.darwer_head_layout, null);
 //        RelativeLayout bottomlayout = (RelativeLayout) getLayoutInflater().inflate(R.layout.darwer_bottom_layout,null);
-        Picasso.with(MainActivity.this).load("http://c2i.zhuoxiu.com.cn//upload/desk/576x373/1210/1351510593_4035.jpg").into((ImageView) headlayout.findViewById(R.id.head_img));
+        ImageLoader.getInstance().displayImage("http://gexing.edujq.com/img/2013/04/19/04191009418291.jpg", (ImageView)headlayout.findViewById(R.id.head_img));
         mDrawerList.addHeaderView(headlayout);
 //        mDrawerList.addFooterView(bottomlayout);
         mDrawerList.setAdapter(drawerAdapter);
@@ -253,8 +293,10 @@ public class MainActivity extends Activity implements AssistListener{
         @Override
         public void onResponse(String response) {
             try{
-                //放入缓存
-                CacheUtil.addMemory("mainList", response);
+                if ( upCount == 0 ){
+                    //放入缓存
+                    CacheUtil.addMemory("mainList", response);
+                }
                 //解析json数据
                 jsonToList(response);
             }catch (Exception e){
@@ -272,7 +314,9 @@ public class MainActivity extends Activity implements AssistListener{
         JSONObject object = JSON.parseObject(response);
         List<Exercise> list = JSON.parseArray(object.getString("actions"),Exercise.class);
 
-        exerciseListlist.clear();
+        if (upCount == 0){
+            exerciseListlist.clear();
+        }
         exerciseListlist.addAll(list);
         mainListAdapter.notifyDataSetChanged();
         mPullToRefreshView.setRefreshing(false);
@@ -354,7 +398,7 @@ public class MainActivity extends Activity implements AssistListener{
 
         @Override
         public void onErrorResponse(VolleyError error) {
-
+            upCount--;
         }
     }
 

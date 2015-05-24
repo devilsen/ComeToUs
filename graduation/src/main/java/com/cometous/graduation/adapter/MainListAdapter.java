@@ -97,6 +97,10 @@ public class MainListAdapter extends BaseAdapter{
 
         if ( !list.get(position).getImg_url().isEmpty()){
             ImageLoader.getInstance().displayImage(Task.HOST + list.get(position).getImg_url(), holder.imageView, MyApplication.options);
+        }else if(position % 2 ==1){
+            holder.imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.no_picture_1));
+        }else{
+            holder.imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.no_picture_2));
         }
 
     }

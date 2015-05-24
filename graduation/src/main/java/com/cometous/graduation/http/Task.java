@@ -17,6 +17,11 @@ public class Task {
 
     /** 请求地址前缀 */
 
+
+    /**
+     * 主页获取更多地址
+     */
+    public static final String HOST_MORE = HOST + "more?";
     /**
      * 详情页地址
      */
@@ -88,6 +93,14 @@ public class Task {
     public static void getActivityList(HashMap<String, String> params, Listener<String> listener,
                                        ErrorListener errorListener) {
         StringJsonRequest request = new StringJsonRequest(Method.GET, HOST, params, listener, errorListener);
+        RequestManager.getRequestQueue().add(request);
+    }
+
+    /**
+     * 获取主页更多信息（上拉加载）
+     */
+    public static void getMoreActivityList(int count, Listener<String> listener, ErrorListener errorListener) {
+        StringJsonRequest request = new StringJsonRequest(HOST_MORE + count, listener, errorListener);
         RequestManager.getRequestQueue().add(request);
     }
 

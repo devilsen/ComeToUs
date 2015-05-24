@@ -22,7 +22,7 @@
                 android:layout_height="match_parent">
 
                 <ListView
-                    android:id="@+id/list_view"
+                    android:id="@+id/main_list_view"
                     android:divider="@null"
                     android:dividerHeight="0dp"
                     android:layout_width="match_parent"
