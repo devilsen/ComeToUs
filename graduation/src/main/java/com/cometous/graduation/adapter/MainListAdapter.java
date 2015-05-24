@@ -11,10 +11,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cometous.graduation.MyApplication;
 import com.cometous.graduation.R;
-import com.cometous.graduation.activity.DetailActivity;
+import com.cometous.graduation.http.Task;
 import com.cometous.graduation.model.Exercise;
-import com.cometous.graduation.util.Log4Utils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -67,12 +68,12 @@ public class MainListAdapter extends BaseAdapter{
             viewHolder.peopleNum = (ImageView) convertView.findViewById(R.id.main_people_num_img);
 
             convertView.setTag(viewHolder);
+
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
         cardView(viewHolder,position);
-
         return convertView;
     }
 
@@ -94,33 +95,9 @@ public class MainListAdapter extends BaseAdapter{
             holder.introduce.setText(list.get(position).getDesc());
         }
 
-        switch (position){
-            case 0:
-                holder.imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.test0));
-                break;
-            case 1:
-                holder.imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.test1));
-                break;
-            case 2:
-                holder.imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.test2));
-                break;
-            case 3:
-                holder.imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.test3));
-                break;
-            case 4:
-                holder.imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.test4));
-                break;
-            case 5:
-                holder.imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.test5));
-                break;
-            case 6:
-                holder.imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.test6));
-                break;
-
+        if ( !list.get(position).getImg_url().isEmpty()){
+            ImageLoader.getInstance().displayImage(Task.HOST + list.get(position).getImg_url(), holder.imageView, MyApplication.options);
         }
-
-
-
 
     }
 

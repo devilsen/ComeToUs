@@ -15,10 +15,12 @@ public class Exercise {
     private String creator;
     @JSONField(name="_v")
     private String v;
+    private String img_url;
     private String active;
     private String top;
     private String type_id;
     private String forkable;
+    private String fork_count;
     private String unlike_count;
     private String like_count;
     private String visit_count;
@@ -40,6 +42,14 @@ public class Exercise {
         this.id = id;
     }
 
+    public String getFork_count() {
+        return fork_count;
+    }
+
+    public void setFork_count(String fork_count) {
+        this.fork_count = fork_count;
+    }
+
     public String getV() {
         return v;
     }
@@ -47,6 +57,16 @@ public class Exercise {
     public void setV(String v) {
         this.v = v;
     }
+
+
+    public String getImg_url() {
+        return img_url;
+    }
+
+    public void setImg_url(String img_url) {
+        this.img_url = img_url;
+    }
+
 
 
     public String getAddr_name() {

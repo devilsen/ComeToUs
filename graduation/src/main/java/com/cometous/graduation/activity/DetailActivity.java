@@ -6,11 +6,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.cometous.graduation.MyApplication;
 import com.cometous.graduation.R;
 import com.cometous.graduation.http.Task;
 import com.cometous.graduation.http.volley.Response;
@@ -20,6 +22,7 @@ import com.cometous.graduation.util.Log4Utils;
 import com.cometous.graduation.util.ShareUtil;
 import com.cometous.graduation.view.ProgressGenerator;
 import com.dd.processbutton.iml.ActionProcessButton;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import org.w3c.dom.Text;
@@ -37,6 +40,7 @@ import it.gmariotti.cardslib.library.view.CardViewNative;
 public class DetailActivity extends BaseActivity implements ProgressGenerator.OnCompleteListener{
 
     private SimpleDateFormat mFormatter = new SimpleDateFormat("hh:mm");
+    private SimpleDateFormat mSimpleFormatter = new SimpleDateFormat("hh");
     private SimpleDateFormat weekFormatter = new SimpleDateFormat("EE");
     private SimpleDateFormat monthFormatter = new SimpleDateFormat("MM月dd日");
 
@@ -61,6 +65,8 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
 
     private TextView chargePersonTxt;
     private TextView personNumTxt;
+
+    private ImageView detailImage;
     /** 报名返回状态 */
     private int status = 0;
 
@@ -143,6 +149,8 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
         //负责人标签
         chargePersonTxt = (TextView) findViewById(R.id.charge_person_txt);
         personNumTxt = (TextView) findViewById(R.id.paerson_num_txt);
+        //图片
+        detailImage = (ImageView) findViewById(R.id.detail_image);
 
     }
     /**
@@ -151,15 +159,29 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
     private void setTxtView(){
         String startTime = mFormatter.format(exercise.getStart_date());
         String endTime = mFormatter.format(exercise.getEnd_date());
-        String startEndTime = mFormatter.format(exercise.getEnd_date().getHours()-exercise.getStart_date().getHours());
-        startEndTxt.setText(startTime + "~" + endTime);
+        String startEndTime = mSimpleFormatter.format(exercise.getEnd_date().getHours()-exercise.getStart_date().getHours());
+        startEndTxt.setText(startTime + "-" + endTime);
         continuedTxt.setText(startEndTime+"个小时");
         weekTxt.setText(weekFormatter.format(exercise.getStart_date()));
         dateTxt.setText(monthFormatter.format(exercise.getStart_date()));
 
-        detailLocationTxt.setText(exercise.getAddr_name());
+        //设置地点
+        String location = exercise.getAddr_name();
+        if (location.contains("-")){
+            detailLocationTxt.setText(location.substring(location.indexOf("-")+1));
+            detailLocationUpTxt.setText(location.substring(0,location.indexOf("-")));
+        }else{
+            detailLocationTxt.setText(location);
+            detailLocationUpTxt.setText(location);
+        }
 
-        chargePersonTxt.setText(exercise.getName());
+
+        chargePersonTxt.setText(exercise.getCreator());
+        personNumTxt.setText(exercise.getFork_count() + "人");
+
+        if (!exercise.getImg_url().isEmpty()){
+            ImageLoader.getInstance().displayImage(Task.HOST + exercise.getImg_url(), detailImage, MyApplication.options);
+        }
 
         init_card_inner_layout();
 

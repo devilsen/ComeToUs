@@ -2,7 +2,9 @@ package com.cometous.graduation.activity;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,8 +23,10 @@ import com.cometous.graduation.R;
 import com.cometous.graduation.adapter.PickTypeDialogListener;
 import com.cometous.graduation.http.Task;
 import com.cometous.graduation.http.volley.Response;
+import com.cometous.graduation.util.Log4Utils;
 import com.cometous.graduation.util.PreferenceUtil;
 import com.cometous.graduation.util.ShareUtil;
+import com.cometous.graduation.util.UploadFile;
 import com.cometous.graduation.view.PickTypeDialog;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
@@ -33,6 +37,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.logging.Handler;
 
 import de.greenrobot.event.EventBus;
 
@@ -44,6 +49,7 @@ public class InitiateActivity extends BaseActivity {
     private static final int ADD_IMAGE = 1;
     private SimpleDateFormat mFormatter = new SimpleDateFormat("：MM月dd日 aa hh:mm");
     private Date startDate = null;
+    private Date endDate = null;
 
     private mClickListener mOnclickListener;
     private LinearLayout mLocationLayout;
@@ -69,6 +75,9 @@ public class InitiateActivity extends BaseActivity {
     /** 地址信息 */
     private double longitude;
     private double latitude;
+    /** 图片路径 */
+    private String picturePath = null;
+    private PictureHandler pictureHandler;
 
     String titleString = null;
     String introduceString = null;
@@ -76,6 +85,7 @@ public class InitiateActivity extends BaseActivity {
     String startString = null;
     String endString = null;
     String myTypeString = null;
+    String imgUrl = null;
 
     private PickTypeDialog typeDialog;
     private LinearLayout typeLayout;
@@ -184,8 +194,8 @@ public class InitiateActivity extends BaseActivity {
     }
     protected void onActivityResult(int request, int result, final Intent data) {
         if (result == RESULT_OK && request == ADD_IMAGE) {
-            String path = data.getStringExtra("imgPath");
-            images.setImageURI(Uri.fromFile(new File(path)));
+            picturePath = data.getStringExtra("imgPath");
+            images.setImageURI(Uri.fromFile(new File(picturePath)));
         }
     }
 
@@ -219,13 +229,14 @@ public class InitiateActivity extends BaseActivity {
         @Override
         public void onDateTimeSet(Date date) {
             startDate = date;
-            startTimeTxt.setText(mFormatter.format(date));
+            startTimeTxt.setText(mFormatter.format(startDate));
         }
     };
     private SlideDateTimeListener endTimelistener = new SlideDateTimeListener() {
         @Override
         public void onDateTimeSet(Date date) {
-            endTimedTxt.setText(mFormatter.format(date));
+            endDate = date;
+            endTimedTxt.setText(mFormatter.format(endDate));
         }
     };
 
@@ -241,7 +252,14 @@ public class InitiateActivity extends BaseActivity {
         if (item.getItemId() == R.id.activity_send){
             if ( checkEmpty() ){
                 showDialog("正在发起...");
-                Task.initiateActivityNet(getParams(),new InitiateActivityNet(),errorListener);
+                if (picturePath == null || picturePath.isEmpty()){
+                    Task.initiateActivityNet(getParams(), new InitiateActivityNet(), errorListener);
+                }else{
+                    pictureHandler = new PictureHandler();
+                    PictureThread pictureThread = new PictureThread();
+                    new Thread(pictureThread).start();
+                }
+
             }
         }else if (item.getItemId() == android.R.id.home ){
             finish();
@@ -300,7 +318,6 @@ public class InitiateActivity extends BaseActivity {
                 showToast("发起失败");
                 dialog.dismiss();
             }
-
         }
     }
 
@@ -308,14 +325,20 @@ public class InitiateActivity extends BaseActivity {
     private HashMap<String,String> getParams(){
         HashMap<String,String> param = new HashMap<String,String>();
         param.put("name",titleString);
-        param.put("create_date",startString);
-        param.put("start_date",startString);
-        param.put("end_date",endString);
-        param.put("edit_date",endString);
+//        param.put("create_date",startDate.getTime() +"");
+        param.put("start_date",startDate.getTime() +"");
+        param.put("end_date",endDate.getTime() + "");
+        param.put("edit_date",endDate.getTime() + "");
         param.put("desc",introduceString);
         param.put("addr_name",locationString);
         param.put("addr_position_x",longitude + "");
         param.put("addr_position_y",latitude + "");
+        param.put("img_url", imgUrl);
+
+        Log4Utils.i("start_date", startDate.getTime() + "");
+        Log4Utils.i("end_date", endDate.getTime() + "");
+        Log4Utils.i("end_date", longitude + "");
+        Log4Utils.i("end_date", latitude + "");
 //        param.put("creator","ObjectId");
 
         return param;
@@ -384,6 +407,8 @@ public class InitiateActivity extends BaseActivity {
         }
         if (!locationString.isEmpty()){
             PreferenceUtil.saveInitiatePreference("initieate.location", locationString);
+            PreferenceUtil.saveInitiatePreference("initieate.latitude", latitude+"");
+            PreferenceUtil.saveInitiatePreference("initieate.longitude", longitude + "");
         }
         if (!startString.isEmpty()){
             PreferenceUtil.saveInitiatePreference("initieate.starttime", startString);
@@ -405,6 +430,15 @@ public class InitiateActivity extends BaseActivity {
         startString = PreferenceUtil.getInitiatePreferencesByKey("initieate.starttime");
         endString = PreferenceUtil.getInitiatePreferencesByKey("initieate.endtime");
         myTypeString = PreferenceUtil.getInitiatePreferencesByKey("initieate.type");
+
+        String latitudeString = PreferenceUtil.getInitiatePreferencesByKey("initieate.latitude");
+        String longitudeString = PreferenceUtil.getInitiatePreferencesByKey("initieate.longitude");
+        if (latitudeString != null && !latitudeString.isEmpty()){
+            latitude = Double.parseDouble(latitudeString);
+        }
+        if (longitudeString != null && !longitudeString.isEmpty()){
+            longitude = Double.parseDouble(longitudeString);
+        }
 
         if ( titleString != null){
             titleEdit.setText(titleString);
@@ -439,4 +473,45 @@ public class InitiateActivity extends BaseActivity {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
     }
+
+
+
+
+    class PictureThread implements Runnable{
+        String pictureUrl;
+        @Override
+        public void run() {
+            pictureUrl = UploadFile.uploadFile(picturePath);
+            Log4Utils.i("imageFile",pictureUrl);
+
+
+
+            Message msg = new Message();
+            Bundle bundle = new Bundle();
+            bundle.putString("result", pictureUrl);
+            msg.setData(bundle);
+            pictureHandler.sendMessage(msg);
+        }
+    }
+
+    class PictureHandler extends android.os.Handler{
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle bundle = msg.getData();
+            String result = bundle.getString("result");
+
+            if(result != null){
+                imgUrl = result;
+                Task.initiateActivityNet(getParams(), new InitiateActivityNet(), errorListener);
+                dialog.dismiss();
+            }else{
+                showToast("图片上传失败");
+                dialog.dismiss();
+            }
+
+        }
+    }
+
 }

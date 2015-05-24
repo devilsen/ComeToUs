@@ -3,6 +3,7 @@ package com.cometous.graduation.activity;
 import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,6 +32,10 @@ import com.cometous.graduation.http.volley.TimeoutError;
 import com.cometous.graduation.http.volley.VolleyError;
 import com.cometous.graduation.util.Log4Utils;
 import com.cometous.graduation.view.LodingDialog;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.yalantis.phoenix.PullToRefreshView;
 import android.widget.LinearLayout.LayoutParams;
 
@@ -80,6 +85,8 @@ public class BaseActivity extends SwipeBackActivity {
     /** dialog加载 */
     protected LodingDialog dialog;
 
+
+
     //错误处理
     protected Handler exph;
     public NetCallback callback;
@@ -118,9 +125,9 @@ public class BaseActivity extends SwipeBackActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-
-
     }
+
+
 
     public void setMyContentView(View contentView){
         contentLayout.removeView(errorView);
