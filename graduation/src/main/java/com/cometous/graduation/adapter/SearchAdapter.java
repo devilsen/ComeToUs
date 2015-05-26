@@ -17,24 +17,23 @@ import com.cometous.graduation.http.Task;
 import com.cometous.graduation.model.Exercise;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-
 import java.util.List;
 
 /**
- * Created by Devilsen on 2015/5/17.
+ * Created by Devilsen on 2015/5/26.
  */
-public class JoinOrInitAdapter extends BaseAdapter {
+public class SearchAdapter extends BaseAdapter {
 
-    private LayoutInflater inflater;
-
-    private List<Exercise> list;
     private Context mContext;
+    private List<Exercise> list;
 
     private MyOnClickListener myOnClickListener;
+    private LayoutInflater inflater;
 
-    public JoinOrInitAdapter(List<Exercise> list, Context mContext) {
-        this.list = list;
+
+    public SearchAdapter(Context mContext, List<Exercise> list) {
         this.mContext = mContext;
+        this.list = list;
 
         inflater = LayoutInflater.from(mContext);
     }
@@ -73,7 +72,7 @@ public class JoinOrInitAdapter extends BaseAdapter {
         viewHoder.title.setText(list.get(position).getName());
         viewHoder.introduce.setText(list.get(position).getDesc());
 
-        if ( !list.get(position).getImg_url().isEmpty()){
+        if ( list.get(position).getImg_url() != null && !list.get(position).getImg_url().isEmpty()){
             ImageLoader.getInstance().displayImage(Task.HOST + list.get(position).getImg_url(), viewHoder.imageView, MyApplication.options);
         }else if(position % 2 ==1){
             viewHoder.imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.no_picture_1));
@@ -103,10 +102,6 @@ public class JoinOrInitAdapter extends BaseAdapter {
             mContext.startActivity(detailIntent);
         }
     }
-
-
-
-
 
     class ViewHoder{
         ImageView imageView;

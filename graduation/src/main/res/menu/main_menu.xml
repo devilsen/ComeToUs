@@ -15,4 +15,10 @@
         android:icon="@drawable/notice_bell"
         android:showAsAction="ifRoom"/>
 
+    <item android:id="@+id/my_notice_red"
+        android:title="我的消息"
+        android:icon="@drawable/notice_bell_red"
+        android:showAsAction="ifRoom"
+        android:visible="false"/>
+
 </menu>

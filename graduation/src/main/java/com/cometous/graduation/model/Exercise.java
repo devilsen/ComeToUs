@@ -28,10 +28,10 @@ public class Exercise {
     private String addr_position_y;
     private String addr_position_x;
     private String desc;
-    private Date edit_date;
-    private Date end_date;
-    private Date start_date;
-    private Date create_date;
+    private long edit_date;
+    private long end_date;
+    private long start_date;
+    private long create_date;
     private String name;
 
     public String getId() {
@@ -174,35 +174,35 @@ public class Exercise {
         this.desc = desc;
     }
 
-    public Date getEdit_date() {
+    public long getEdit_date() {
         return edit_date;
     }
 
-    public void setEdit_date(Date edit_date) {
+    public void setEdit_date(long edit_date) {
         this.edit_date = edit_date;
     }
 
-    public Date getEnd_date() {
+    public long getEnd_date() {
         return end_date;
     }
 
-    public void setEnd_date(Date end_date) {
+    public void setEnd_date(long end_date) {
         this.end_date = end_date;
     }
 
-    public Date getStart_date() {
+    public long getStart_date() {
         return start_date;
     }
 
-    public void setStart_date(Date start_date) {
+    public void setStart_date(long start_date) {
         this.start_date = start_date;
     }
 
-    public Date getCreate_date() {
+    public long getCreate_date() {
         return create_date;
     }
 
-    public void setCreate_date(Date create_date) {
+    public void setCreate_date(long create_date) {
         this.create_date = create_date;
     }
 

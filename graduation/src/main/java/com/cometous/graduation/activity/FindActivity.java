@@ -120,6 +120,21 @@ public class FindActivity extends BaseActivity implements AssistListener {
 
     }
 
+    @Override
+    public void share(Exercise item, int position) {
+
+    }
+
+    @Override
+    public void join(Exercise item, int position) {
+
+    }
+
+    @Override
+    public void zan(Exercise item, int position) {
+
+    }
+
 
     /**
      * ViewPager适配器

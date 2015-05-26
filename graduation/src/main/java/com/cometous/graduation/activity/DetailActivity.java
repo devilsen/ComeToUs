@@ -29,6 +29,7 @@ import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardHeader;
@@ -37,16 +38,19 @@ import it.gmariotti.cardslib.library.view.CardViewNative;
 /**
  * Created by lenovo on 2015/4/11.
  */
-public class DetailActivity extends BaseActivity implements ProgressGenerator.OnCompleteListener{
+public class DetailActivity extends BaseActivity {
 
     private SimpleDateFormat mFormatter = new SimpleDateFormat("hh:mm");
     private SimpleDateFormat mSimpleFormatter = new SimpleDateFormat("hh");
+    private SimpleDateFormat morningFormatter = new SimpleDateFormat("a");
     private SimpleDateFormat weekFormatter = new SimpleDateFormat("EE");
     private SimpleDateFormat monthFormatter = new SimpleDateFormat("MM月dd日");
 
 
     private ActionProcessButton joinButton;
+    private ActionProcessButton quitButton;
     private ProgressGenerator progressGenerator;
+    private ProgressGenerator quitProgressGenerator;
 
     private Exercise exercise;
     private String paramId;
@@ -69,6 +73,8 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
     private ImageView detailImage;
     /** 报名返回状态 */
     private int status = 0;
+    private int quitstatus = 0;
+    private boolean isFork;
 
 
     @Override
@@ -97,15 +103,25 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
      */
     private void init(){
         lodingView.setVisibility(View.VISIBLE);
-        progressGenerator = new ProgressGenerator(this);
+        progressGenerator = new ProgressGenerator(new joinPrograss());
+        quitProgressGenerator = new ProgressGenerator(new quitPrograss());
         joinButton = (ActionProcessButton) findViewById(R.id.join_btn);
+        quitButton = (ActionProcessButton) findViewById(R.id.detail_quit_btn);
 
         joinButton.setMode(ActionProcessButton.Mode.ENDLESS);
+        quitButton.setMode(ActionProcessButton.Mode.ENDLESS);
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 progressGenerator.start(joinButton);
-                Task.joinActivity(exercise.getId(),new JoinActivity(),errorListener);
+                Task.joinActivity(exercise.getId(), new JoinActivity(), errorListener);
+            }
+        });
+        quitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                quitProgressGenerator.start(quitButton);
+                Task.quitActivity(exercise.getId(), new QuitActivity(), errorListener);
             }
         });
 
@@ -116,22 +132,51 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
     /**
      * 按钮回调
      */
-    @Override
-    public void onComplete() {
-        if (status == 0){
-            String num = personNumTxt.getText().toString().trim();
-            if (!num.isEmpty()){
-                int count = Integer.parseInt(num) + 1;
-                personNumTxt.setText(count+"");
-                joinButton.setEnabled(false);
-            }
-        }else{
-            Toast.makeText(DetailActivity.this,"报名失败了,再试一试吧",Toast.LENGTH_SHORT).show();
-            joinButton.setBackgroundColor(getResources().getColor(R.color.actionbar_color));
-            joinButton.setText("我要参加");
+    class joinPrograss implements ProgressGenerator.OnCompleteListener{
+        @Override
+        public void onComplete() {
+            if (status == 0){
+                String num = personNumTxt.getText().toString().trim();
+                if (!num.isEmpty()){
+                    int count = Integer.parseInt(num) + 1;
+                    personNumTxt.setText(count+"");
+                    joinButton.setEnabled(false);
 
+                    CacheUtil.removeMemory(paramId);
+                }
+            }else{
+                Toast.makeText(DetailActivity.this,"报名失败了,再试一试吧",Toast.LENGTH_SHORT).show();
+                joinButton.setBackgroundColor(getResources().getColor(R.color.actionbar_color));
+                joinButton.setText("我要参加");
+
+            }
         }
     }
+    class quitPrograss implements ProgressGenerator.OnCompleteListener{
+        @Override
+        public void onComplete() {
+            if (quitstatus == 0){
+                String num = personNumTxt.getText().toString().trim();
+                if (!num.isEmpty()){
+                    int count = Integer.parseInt(num) - 1;
+                    if (count == -1){
+                        personNumTxt.setText("0");
+                    }else{
+                        personNumTxt.setText(count+"");
+                    }
+                    quitButton.setEnabled(false);
+
+                    CacheUtil.removeMemory(paramId);
+                }
+            }else{
+                Toast.makeText(DetailActivity.this,"退出失败，网络错误",Toast.LENGTH_SHORT).show();
+                quitButton.setBackgroundColor(getResources().getColor(R.color.actionbar_color));
+                quitButton.setText("退出活动");
+
+            }
+        }
+    }
+
 
     /**
      * initView
@@ -157,13 +202,15 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
      * 设置标签内容
      */
     private void setTxtView(){
-        String startTime = mFormatter.format(exercise.getStart_date());
-        String endTime = mFormatter.format(exercise.getEnd_date());
-        String startEndTime = mSimpleFormatter.format(exercise.getEnd_date().getHours()-exercise.getStart_date().getHours());
+        Date startDate = new Date(exercise.getStart_date());
+        Date endDate = new Date(exercise.getEnd_date());
+        String startTime = mFormatter.format(startDate);
+        String endTime = mFormatter.format(endDate);
+        String startEndTime = mSimpleFormatter.format(startDate.getHours()-endDate.getHours());
         startEndTxt.setText(startTime + "-" + endTime);
         continuedTxt.setText(startEndTime+"个小时");
-        weekTxt.setText(weekFormatter.format(exercise.getStart_date()));
-        dateTxt.setText(monthFormatter.format(exercise.getStart_date()));
+        weekTxt.setText(weekFormatter.format(startDate) + " " + morningFormatter.format(startDate));
+        dateTxt.setText(monthFormatter.format(endDate));
 
         //设置地点
         String location = exercise.getAddr_name();
@@ -177,9 +224,9 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
 
 
         chargePersonTxt.setText(exercise.getCreator());
-        personNumTxt.setText(exercise.getFork_count() + "人");
+        personNumTxt.setText(exercise.getFork_count());
 
-        if (!exercise.getImg_url().isEmpty()){
+        if ( exercise.getImg_url() != null && !exercise.getImg_url().isEmpty()){
             ImageLoader.getInstance().displayImage(Task.HOST + exercise.getImg_url(), detailImage, MyApplication.options);
         }else{
             detailImage.setImageDrawable(getResources().getDrawable(R.drawable.no_picture_1));
@@ -214,6 +261,16 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
         if(text != null){
             JSONObject object = JSON.parseObject(text);
             exercise = JSON.parseObject(object.getString("message"),Exercise.class);
+
+            isFork = object.getBoolean("fork");
+            if (isFork){
+                joinButton.setVisibility(View.GONE);
+                quitButton.setVisibility(View.VISIBLE);
+            }else{
+                joinButton.setVisibility(View.VISIBLE);
+                quitButton.setVisibility(View.GONE);
+            }
+
             setTxtView();
         }else{
             Task.getActivityDetail(paramId, new ActivityDetail(), errorListener);
@@ -232,6 +289,15 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
 
             exercise = JSON.parseObject(object.getString("message"),Exercise.class);
 
+            isFork = object.getBoolean("fork");
+            if (isFork){
+                joinButton.setVisibility(View.GONE);
+                quitButton.setVisibility(View.VISIBLE);
+            }else{
+                joinButton.setVisibility(View.VISIBLE);
+                quitButton.setVisibility(View.GONE);
+            }
+
             setTxtView();
         }
     }
@@ -243,6 +309,17 @@ public class DetailActivity extends BaseActivity implements ProgressGenerator.On
             JSONObject object = JSON.parseObject(response);
 
             status = object.getInteger("status");
+
+        }
+    }
+
+    class QuitActivity implements Response.Listener<String>{
+
+        @Override
+        public void onResponse(String response) {
+            JSONObject object = JSON.parseObject(response);
+
+            quitstatus = object.getInteger("status");
 
         }
     }

@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.alibaba.fastjson.util.IdentityHashMap;
+import com.cometous.graduation.activity.BaseActivity;
+import com.cometous.graduation.activity.DetailActivity;
 import com.cometous.graduation.http.volley.Request.Method;
 import com.cometous.graduation.http.volley.Response.ErrorListener;
 import com.cometous.graduation.http.volley.Response.Listener;
@@ -13,7 +15,6 @@ import com.cometous.graduation.util.Log4Utils;
 public class Task {
 
     public static final String HOST = "http://45.56.82.203:3001/";
-//	public static final String HOST = "http://192.168.1.110:3001/";
 
     /** 请求地址前缀 */
 
@@ -21,7 +22,7 @@ public class Task {
     /**
      * 主页获取更多地址
      */
-    public static final String HOST_MORE = HOST + "more?";
+    public static final String HOST_MORE = HOST + "more?skip=";
     /**
      * 详情页地址
      */
@@ -30,6 +31,10 @@ public class Task {
      * 参加活动地址
      */
     public static final String HOST_JOIN = HOST + "action/fork/";
+    /**
+     * 退出活动地址
+     */
+    public static final String HOST_QUIT = HOST + "action/exit/";
     /**
      * 新建活动
      */
@@ -51,6 +56,34 @@ public class Task {
      * 获取个人信息
      */
     public static final String HOST_USER_INFO = HOST + "users/profile/";
+
+    /**
+     * 搜索
+     */
+    public static final String HOST_SEARCH = HOST + "search/";
+
+    /**
+     * 赞
+     */
+    public static final String HOST_ACTIVITY_ZAN = HOST + "action/starUp/";
+
+    /**
+     * 通知推送
+     */
+    public static final String HOST_NOTICE = HOST + "notification";
+
+    /**
+     * 通知列表
+     */
+    public static final String HOST_NOTICE_LIST = HOST + "notification/history";
+
+    /**
+     * 通知列表
+     */
+    public static final String HOST_SETTING_UPDATE = HOST + "users/update/";
+
+
+
 
 
     public static final String ACTION_GET_OPP_BASE = "0";
@@ -125,6 +158,14 @@ public class Task {
     }
 
     /**
+     * 退出活动
+     */
+    public static void quitActivity(String id, Listener<String> listener, ErrorListener errorListener) {
+        StringJsonRequest request = new StringJsonRequest(HOST_QUIT + id, listener, errorListener);
+        RequestManager.getRequestQueue().add(request);
+    }
+
+    /**
      * 新建活动
      *
      * @param param
@@ -173,4 +214,45 @@ public class Task {
         StringJsonRequest request = new StringJsonRequest(url, listener, errorListener);
         RequestManager.getRequestQueue().add(request);
     }
+    /**
+     * 搜索
+     */
+    public static void search( String keyWord, Listener<String> listener, ErrorListener errorListener) {
+        StringJsonRequest request = new StringJsonRequest(HOST_SEARCH + "name?key=" + keyWord, listener, errorListener);
+        RequestManager.getRequestQueue().add(request);
+    }
+
+    /**
+     * 点赞
+     */
+    public static void zanListener( String id, Listener<String> listener, ErrorListener errorListener) {
+        StringJsonRequest request = new StringJsonRequest(HOST_ACTIVITY_ZAN + id , listener, errorListener);
+        RequestManager.getRequestQueue().add(request);
+    }
+
+    /**
+     * 设置更新
+     */
+
+    public static void settingUpdate(HashMap<String, String> param, Listener<String> listener, ErrorListener errorListener) {
+        StringJsonRequest request = new StringJsonRequest(Method.POST, HOST_SETTING_UPDATE, param, listener, errorListener);
+        RequestManager.getRequestQueue().add(request);
+    }
+
+    /**
+     * 获取消息---推送
+     */
+    public static void getNotice(  Listener<String> listener, ErrorListener errorListener) {
+        StringJsonRequest request = new StringJsonRequest(HOST_NOTICE , listener, errorListener);
+        RequestManager.getRequestQueue().add(request);
+    }
+
+    /**
+     * 获取消息--------列表
+     */
+    public static void getNoticeList( Listener<String> listener, ErrorListener errorListener) {
+        StringJsonRequest request = new StringJsonRequest(HOST_NOTICE_LIST, listener, errorListener);
+        RequestManager.getRequestQueue().add(request);
+    }
+
 }

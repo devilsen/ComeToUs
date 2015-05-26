@@ -15,5 +15,8 @@ public class CacheUtil {
         return text;
     }
 
+    public static void removeMemory(String id){
+        PreferenceUtil.removePreference(id);
+    }
 
 }

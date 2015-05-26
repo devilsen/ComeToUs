@@ -12,6 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cometous.graduation.R;
+import com.cometous.graduation.activity.DetailActivity;
+import com.cometous.graduation.activity.UserInfoActivity;
 import com.cometous.graduation.model.Exercise;
 import com.cometous.graduation.model.Notice;
 
@@ -58,11 +60,33 @@ public class NoticeListAdapter extends BaseAdapter{
             viewHolder = new ViewHolder();
             convertView = mInflater.inflate(R.layout.notice_item_list, parent, false);
             viewHolder.title = (TextView) convertView.findViewById(R.id.notice_title_txt);
-            viewHolder.text = (TextView) convertView.findViewById(R.id.notice_text_txt);
+            viewHolder.username = (TextView) convertView.findViewById(R.id.notice_username);
+            viewHolder.text = (TextView) convertView.findViewById(R.id.notice_txt);
+            viewHolder.activty = (TextView) convertView.findViewById(R.id.notice_activity);
 
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
+        }
+
+        if (list.get(position).getContent() != null && !list.get(position).getContent().isEmpty()){
+            if (list.get(position).getContent().contains("参加")){
+                viewHolder.title.setText("参与通知");
+                viewHolder.text.setText("参加了你发起的");
+            }else if (list.get(position).getContent().contains("退出")){
+                viewHolder.title.setText("退出通知");
+                viewHolder.text.setText("退出了你发起的");
+            }
+        }
+
+        if (list.get(position).getSend_from_name() != null && !list.get(position).getSend_from_name().isEmpty()){
+            viewHolder.username.setText(list.get(position).getSend_from_name());
+        }
+
+        if (list.get(position).getAction_name() != null && !list.get(position).getAction_name().isEmpty()){
+            viewHolder.activty.setText(list.get(position).getAction_name());
+        }else {
+            viewHolder.activty.setText("未知活动");
         }
 
         cardView(viewHolder,position);
@@ -72,9 +96,8 @@ public class NoticeListAdapter extends BaseAdapter{
 
     private void cardView(ViewHolder holder,int position){
         myOnclickListener = new MyOnclickListener(position);
-        holder.title.setOnClickListener(myOnclickListener);
-        holder.text.setOnClickListener(myOnclickListener);
-
+        holder.username.setOnClickListener(myOnclickListener);
+        holder.activty.setOnClickListener(myOnclickListener);
 
     }
 
@@ -89,8 +112,19 @@ public class NoticeListAdapter extends BaseAdapter{
         @Override
         public void onClick(View v) {
             switch (v.getId()){
-                case R.id.notice_text_txt:
-                    Toast.makeText(mContext,"dante的个人介绍",Toast.LENGTH_SHORT).show();
+                case R.id.notice_username:
+                    Intent userinfoIntent = new Intent(mContext, UserInfoActivity.class);
+                    userinfoIntent.putExtra("userid", list.get(position).getSend_from());
+                    mContext.startActivity(userinfoIntent);
+                    break;
+                case R.id.notice_activity:
+                    if (list.get(position).getAction_id() != null){
+                        Intent detailIntent = new Intent(mContext, DetailActivity.class);
+                        detailIntent.putExtra("paramId", list.get(position).getAction_id());
+                        mContext.startActivity(detailIntent);
+                    }else{
+                        Toast.makeText(mContext,"活动已过期",Toast.LENGTH_SHORT).show();
+                    }
                     break;
 
             }
@@ -99,6 +133,8 @@ public class NoticeListAdapter extends BaseAdapter{
 
     class ViewHolder {
         TextView title;
+        TextView username;
         TextView text;
+        TextView activty;
     }
 }

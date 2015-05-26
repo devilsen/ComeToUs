@@ -55,6 +55,8 @@ public class UserInfoActivity extends BaseActivity implements ProgressGenerator.
     private String joinString;
     private String initString;
 
+    private String userId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +104,15 @@ public class UserInfoActivity extends BaseActivity implements ProgressGenerator.
             }
         });
 
-        Task.getUserInfo("555857bfad99d7b5379430d5",new UserInfoListener(),errorListener);
+        Intent intent = getIntent();
+        userId = intent.getStringExtra("userid");
+        if (userId == null){
+            Task.getUserInfo(null ,new UserInfoListener(),errorListener);
+        }else{
+            Task.getUserInfo(userId ,new UserInfoListener(),errorListener);
+        }
+
+
 
     }
 
@@ -136,7 +146,9 @@ public class UserInfoActivity extends BaseActivity implements ProgressGenerator.
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.user_info_head_img:
-                    pictrueChooser();
+                    if (userId ==null){
+                        pictrueChooser();
+                    }
                     break;
                 case R.id.user_info_jion_time_layout:
                     Intent joinIntent = new Intent(UserInfoActivity.this,JoinOrInitActivity.class);
@@ -168,11 +180,13 @@ public class UserInfoActivity extends BaseActivity implements ProgressGenerator.
         public void onResponse(String response) {
             try{
                 JSONObject object = JSON.parseObject(response);
-                userinfo = JSON.parseObject(object.getString("message"), User.class);
-                joinString = object.getString("countOfJoin");
-                initString = object.getString("countOfMy");
+                JSONObject message = JSON.parseObject(object.getString("message"));
+                int status = object.getInteger("status");
+                userinfo = JSON.parseObject(message.getString("user"), User.class);
+                joinString = message.getString("countOfJoin");
+                initString = message.getString("countOfMy");
 
-                if (userinfo != null){
+                if (status == 1){
                     setText();
                 }else {
                     Toast.makeText(UserInfoActivity.this,"获取个人信息失败",Toast.LENGTH_SHORT).show();
@@ -197,7 +211,7 @@ public class UserInfoActivity extends BaseActivity implements ProgressGenerator.
         if (initString == null || initString.isEmpty()){
             initCount.setText("0");
         }else{
-            joinCount.setText(initString);
+            initCount.setText(initString);
         }
         usernameTxt.setText(userinfo.getLoginname());
         schoolTxt.setText(userinfo.getSchool());

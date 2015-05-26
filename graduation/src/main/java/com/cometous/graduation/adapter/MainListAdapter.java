@@ -31,6 +31,8 @@ public class MainListAdapter extends BaseAdapter{
     private List<Exercise> list;
     private MyOnclickListener myOnclickListener;
 
+    ViewHolder viewHolder;
+
     public MainListAdapter(Context context, List<Exercise> list,AssistListener assistListener) {
         mInflater = LayoutInflater.from(context);
         mContext = context;
@@ -55,7 +57,7 @@ public class MainListAdapter extends BaseAdapter{
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        final ViewHolder viewHolder;
+
         if (convertView == null) {
             viewHolder = new ViewHolder();
             convertView = mInflater.inflate(R.layout.main_list_item, parent, false);
@@ -66,6 +68,7 @@ public class MainListAdapter extends BaseAdapter{
             viewHolder.share = (ImageView) convertView.findViewById(R.id.main_share_img);
             viewHolder.join = (ImageView) convertView.findViewById(R.id.main_join_img);
             viewHolder.peopleNum = (ImageView) convertView.findViewById(R.id.main_people_num_img);
+            viewHolder.zanNum = (TextView) convertView.findViewById(R.id.main_item_zan_num);
 
             convertView.setTag(viewHolder);
 
@@ -93,6 +96,10 @@ public class MainListAdapter extends BaseAdapter{
 
         if ( !list.get(position).getDesc().isEmpty() ){
             holder.introduce.setText(list.get(position).getDesc());
+        }
+
+        if ( !list.get(position).getLike_count().isEmpty() ){
+            holder.zanNum.setText(list.get(position).getLike_count());
         }
 
         if ( !list.get(position).getImg_url().isEmpty()){
@@ -123,20 +130,19 @@ public class MainListAdapter extends BaseAdapter{
                 case R.id.main_item_title_txt:
                 case R.id.main_item_introduce_txt:
                     assistListener.gotoDetail(item,position);
-
                     break;
                 case R.id.main_share_img:
-                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                    shareIntent.setType("text/plain");
-                    shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    shareIntent.putExtra(Intent.EXTRA_TEXT, "come to us");
-                    mContext.startActivity(Intent.createChooser(shareIntent,"app"));
+                    assistListener.share(item, position);
                     break;
                 case R.id.main_join_img:
                     Toast.makeText(mContext,"正在加入...",Toast.LENGTH_SHORT).show();
+                    assistListener.join(item, position);
                     break;
                 case R.id.main_people_num_img:
-                    Toast.makeText(mContext,"赞",Toast.LENGTH_SHORT).show();
+                    assistListener.zan(item, position);
+                    int count = Integer.parseInt(item.getLike_count());
+                    count++;
+                    viewHolder.zanNum.setText(count + "");
                     break;
             }
         }
@@ -150,5 +156,6 @@ public class MainListAdapter extends BaseAdapter{
         ImageView share;
         ImageView join;
         ImageView peopleNum;
+        TextView zanNum;
     }
 }

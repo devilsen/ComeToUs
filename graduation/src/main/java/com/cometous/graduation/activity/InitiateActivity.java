@@ -416,7 +416,7 @@ public class InitiateActivity extends BaseActivity {
         if (!endString.isEmpty()){
             PreferenceUtil.saveInitiatePreference("initieate.endtime", endString);
         }
-        if (!myTypeString.isEmpty()){
+        if (myTypeString != null && !myTypeString.isEmpty()){
             PreferenceUtil.saveInitiatePreference("initieate.type", myTypeString);
         }
 
@@ -483,8 +483,6 @@ public class InitiateActivity extends BaseActivity {
         public void run() {
             pictureUrl = UploadFile.uploadFile(picturePath);
             Log4Utils.i("imageFile",pictureUrl);
-
-
 
             Message msg = new Message();
             Bundle bundle = new Bundle();

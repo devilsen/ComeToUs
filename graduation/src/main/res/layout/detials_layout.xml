@@ -202,17 +202,30 @@
                             android:textColor="@color/text_gray_white"
                             android:textSize="14sp" />
 
-                        <TextView
-                            android:id="@+id/paerson_num_txt"
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentBottom="true"
-                            android:layout_marginEnd="50dp"
+                            android:layout_marginEnd="40dp"
                             android:paddingBottom="2dp"
-                            android:text="30"
-                            android:textColor="@color/text_gray_white"
-                            android:textSize="14sp" />
+                            android:orientation="horizontal">
+                            <TextView
+                                android:id="@+id/paerson_num_txt"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="30"
+                                android:textColor="@color/text_gray_white"
+                                android:textSize="14sp" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="人"
+                                android:textColor="@color/text_gray_white"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
 
                     </RelativeLayout>
 
@@ -220,6 +233,7 @@
 
 
                 <com.dd.processbutton.iml.ActionProcessButton
+                    android:visibility="gone"
                     android:id="@+id/join_btn"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
@@ -234,6 +248,23 @@
                     custom:pb_colorProgress="@color/purple_progress"
                     custom:pb_textComplete="@string/Registration_Success"
                     custom:pb_textProgress="@string/Registration" />
+
+                <com.dd.processbutton.iml.ActionProcessButton
+                    android:visibility="gone"
+                    android:id="@+id/detail_quit_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="8dp"
+                    android:text="退出活动"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
+                    custom:pb_colorComplete="@color/green_complete"
+                    custom:pb_colorNormal="@color/actionbar_color"
+                    custom:pb_colorPressed="@color/blue_pressed"
+                    custom:pb_colorProgress="@color/purple_progress"
+                    custom:pb_textComplete="退出成功"
+                    custom:pb_textProgress="正在退出" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
